@@ -1,0 +1,971 @@
+[
+  {
+    "id": "1",
+    "title": "Modern Apartment in CDO",
+    "description": "Cozy studio near downtown, ideal for students or young professionals.",
+    "created_at": "2025-09-01T10:00:00Z",
+    "upvotes": 120,
+    "nr_of_comments": 12,
+    "image": "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=800&q=80",
+    "location": "Cagayan de Oro, Philippines",
+    "beds": "2 beds",
+    "rating": 4.83,
+    "reviews": 12,
+    "pricePerNight": "₱1,550 / night",
+    "filters": ["city", "apartment", "student-budget", "women-only"],
+    "availability": "Available",
+    "type": "Apartment",
+    "postedAt": "2025-09-01",
+    "latitude": 8.4542,
+    "longitude": 124.6319,
+    "favorited": false,
+    "reviewsList": [
+      {
+        "user": "Anna",
+        "rating": 5,
+        "comment": "Great place, very clean! lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/women/1.jpg"
+      },
+      {
+        "user": "Mark",
+        "rating": 4,
+        "comment": "Nice location, but a bit noisy. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/men/2.jpg"
+      },
+      {
+        "user": "Liza",
+        "rating": 5,
+        "comment": "Loved it! Will book again.",
+        "avatar": "https://randomuser.me/api/portraits/women/3.jpg"
+      }
+    ],
+    "group": {
+      "id": "group-1",
+      "name": "r/CDOProperties",
+      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/11.png"
+    },
+    "user": {
+      "id": "user-1",
+      "name": "Neil",
+      "image": null
+    }
+  },
+  {
+    "id": "2",
+    "title": "Scenic Mountain Retreat",
+    "description": "Quiet cabin with breathtaking views, perfect for families.",
+    "created_at": "2025-08-25T09:15:00Z",
+    "upvotes": 95,
+    "nr_of_comments": 20,
+    "image": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+    "location": "Bukidnon, Philippines",
+    "beds": "3 beds",
+    "rating": 4.9,
+    "reviews": 45,
+    "pricePerNight": "₱3,200 / night",
+    "filters": ["mountain", "retreat", "family-friendly"],
+    "availability": "Available",
+    "type": "Cottage",
+    "postedAt": "2025-08-25",
+    "latitude": 8.4542,
+    "longitude": 124.6319,
+    "favorited": false,
+    "reviewsList": [
+      {
+        "user": "Anna",
+        "rating": 5,
+        "comment": "Great place, very clean! lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/women/1.jpg"
+      },
+      {
+        "user": "Mark",
+        "rating": 4,
+        "comment": "Nice location, but a bit noisy. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/men/2.jpg"
+      },
+      {
+        "user": "Liza",
+        "rating": 5,
+        "comment": "Loved it! Will book again.",
+        "avatar": "https://randomuser.me/api/portraits/women/3.jpg"
+      }
+    ],
+    "group": {
+      "id": "group-2",
+      "name": "r/MountainStays",
+      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/10.png"
+    },
+    "user": {
+      "id": "user-2",
+      "name": "Maria",
+      "image": null
+    }
+  },
+  {
+    "id": "3",
+    "title": "Cozy Beachside Villa",
+    "description": "Steps away from the ocean, great for group vacations.",
+    "created_at": "2025-08-20T14:00:00Z",
+    "upvotes": 80,
+    "nr_of_comments": 18,
+    "image": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
+    "location": "Panglao, Bohol, Philippines",
+    "beds": "4 beds",
+    "rating": 4.7,
+    "reviews": 32,
+    "pricePerNight": "₱5,000 / night",
+    "filters": ["beach", "villa", "family-friendly", "long-stay"],
+    "availability": "Unavailable",
+    "type": "Villa",
+    "postedAt": "2025-08-20",
+    "latitude": 8.4542,
+    "longitude": 124.6319,
+    "favorited": false,
+    "reviewsList": [
+      {
+        "user": "Anna",
+        "rating": 5,
+        "comment": "Great place, very clean! lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/women/1.jpg"
+      },
+      {
+        "user": "Mark",
+        "rating": 4,
+        "comment": "Nice location, but a bit noisy. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/men/2.jpg"
+      },
+      {
+        "user": "Liza",
+        "rating": 5,
+        "comment": "Loved it! Will book again.",
+        "avatar": "https://randomuser.me/api/portraits/women/3.jpg"
+      }
+    ],
+    "group": {
+      "id": "group-3",
+      "name": "r/BeachHomes",
+      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/9.png"
+    },
+    "user": {
+      "id": "user-3",
+      "name": "Juan",
+      "image": null
+    }
+  },
+  {
+    "id": "4",
+    "title": "Urban Loft in Manila",
+    "description": "Stylish loft in the heart of the city with fast WiFi.",
+    "created_at": "2025-08-15T08:30:00Z",
+    "upvotes": 150,
+    "nr_of_comments": 40,
+    "image": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
+    "location": "Makati, Manila, Philippines",
+    "beds": "1 queen bed",
+    "rating": 4.85,
+    "reviews": 58,
+    "pricePerNight": "₱2,700 / night",
+    "filters": ["city", "loft", "business-travel"],
+    "availability": "Available",
+    "type": "Loft",
+    "postedAt": "2025-08-15",
+    "latitude": 8.4542,
+    "longitude": 124.6319,
+    "favorited": false,
+    "reviewsList": [
+      {
+        "user": "Anna",
+        "rating": 5,
+        "comment": "Great place, very clean! lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/women/1.jpg"
+      },
+      {
+        "user": "Mark",
+        "rating": 4,
+        "comment": "Nice location, but a bit noisy. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/men/2.jpg"
+      },
+      {
+        "user": "Liza",
+        "rating": 5,
+        "comment": "Loved it! Will book again.",
+        "avatar": "https://randomuser.me/api/portraits/women/3.jpg"
+      }
+    ],
+    "group": {
+      "id": "group-4",
+      "name": "r/MetroLiving",
+      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/8.png"
+    },
+    "user": {
+      "id": "user-4",
+      "name": "u/Neil",
+      "image": null
+    }
+  },
+  {
+    "id": "5",
+    "title": "Lakeview Cottage",
+    "description": "Peaceful stay with stunning lake views, ideal for couples.",
+    "created_at": "2025-08-10T07:20:00Z",
+    "upvotes": 72,
+    "nr_of_comments": 14,
+    "image": "https://images.unsplash.com/photo-1505691723518-36a5ac3be353?auto=format&fit=crop&w=800&q=80",
+    "location": "Lake Sebu, South Cotabato, Philippines",
+    "beds": "2 beds",
+    "rating": 4.6,
+    "reviews": 22,
+    "pricePerNight": "₱2,200 / night",
+    "filters": ["lake", "romantic", "nature"],
+    "availability": "Available",
+    "type": "Cottage",
+    "postedAt": "2025-08-10",
+    "latitude": 8.4542,
+    "longitude": 124.6319,
+    "favorited": false,
+    "reviewsList": [
+      {
+        "user": "Anna",
+        "rating": 5,
+        "comment": "Great place, very clean! lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/women/1.jpg"
+      },
+      {
+        "user": "Mark",
+        "rating": 4,
+        "comment": "Nice location, but a bit noisy. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/men/2.jpg"
+      },
+      {
+        "user": "Liza",
+        "rating": 5,
+        "comment": "Loved it! Will book again.",
+        "avatar": "https://randomuser.me/api/portraits/women/3.jpg"
+      }
+    ],
+    "group": {
+      "id": "group-5",
+      "name": "r/NatureStays",
+      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/7.png"
+    },
+    "user": {
+      "id": "user-5",
+      "name": "u/Sofia",
+      "image": null
+    }
+  },
+  {
+    "id": "6",
+    "title": "Modern Condo with Pool Access",
+    "description": "Fully furnished condo with pool and gym amenities.",
+    "created_at": "2025-08-05T15:45:00Z",
+    "upvotes": 98,
+    "nr_of_comments": 30,
+    "image": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
+    "location": "Cebu City, Philippines",
+    "beds": "1 bed",
+    "rating": 4.8,
+    "reviews": 50,
+    "pricePerNight": "₱2,000 / night",
+    "filters": ["city", "condo", "amenities"],
+    "availability": "Available",
+    "type": "Condo",
+    "postedAt": "2025-08-05",
+    "latitude": 8.4542,
+    "longitude": 124.6319,
+    "favorited": false,
+    "reviewsList": [
+      {
+        "user": "Anna",
+        "rating": 5,
+        "comment": "Great place, very clean! lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/women/1.jpg"
+      },
+      {
+        "user": "Mark",
+        "rating": 4,
+        "comment": "Nice location, but a bit noisy. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/men/2.jpg"
+      },
+      {
+        "user": "Liza",
+        "rating": 5,
+        "comment": "Loved it! Will book again.",
+        "avatar": "https://randomuser.me/api/portraits/women/3.jpg"
+      }
+    ],
+    "group": {
+      "id": "group-6",
+      "name": "r/CebuLiving",
+      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/6.png"
+    },
+    "user": {
+      "id": "user-6",
+      "name": "u/Marco",
+      "image": null
+    }
+  },
+  {
+    "id": "7",
+    "title": "Rustic Farmhouse Escape",
+    "description": "Authentic farmhouse stay surrounded by rice fields.",
+    "created_at": "2025-08-01T11:00:00Z",
+    "upvotes": 67,
+    "nr_of_comments": 12,
+    "image": "https://images.unsplash.com/photo-1502673530728-f79b4cab31b1?auto=format&fit=crop&w=800&q=80",
+    "location": "Nueva Ecija, Philippines",
+    "beds": "3 beds",
+    "rating": 4.5,
+    "reviews": 18,
+    "pricePerNight": "₱1,800 / night",
+    "filters": ["farm", "rustic", "family"],
+    "availability": "Unavailable",
+    "type": "Farmhouse",
+    "postedAt": "2025-08-01",
+    "latitude": 8.4542,
+    "longitude": 124.6319,
+    "favorited": false,
+    "reviewsList": [
+      {
+        "user": "Anna",
+        "rating": 5,
+        "comment": "Great place, very clean! lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/women/1.jpg"
+      },
+      {
+        "user": "Mark",
+        "rating": 4,
+        "comment": "Nice location, but a bit noisy. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/men/2.jpg"
+      },
+      {
+        "user": "Liza",
+        "rating": 5,
+        "comment": "Loved it! Will book again.",
+        "avatar": "https://randomuser.me/api/portraits/women/3.jpg"
+      }
+    ],
+    "group": {
+      "id": "group-7",
+      "name": "r/FarmStay",
+      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/5.png"
+    },
+    "user": {
+      "id": "user-7",
+      "name": "u/Luis",
+      "image": null
+    }
+  },
+  {
+    "id": "8",
+    "title": "Luxury Penthouse",
+    "description": "High-rise penthouse with panoramic city views.",
+    "created_at": "2025-07-28T18:10:00Z",
+    "upvotes": 180,
+    "nr_of_comments": 60,
+    "image": "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80",
+    "location": "Bonifacio Global City, Taguig, Philippines",
+    "beds": "2 king beds",
+    "rating": 4.95,
+    "reviews": 75,
+    "pricePerNight": "₱12,000 / night",
+    "filters": ["luxury", "penthouse", "city"],
+    "availability": "Available",
+    "type": "Penthouse",
+    "postedAt": "2025-07-28",
+    "latitude": 8.4542,
+    "longitude": 124.6319,
+    "favorited": false,
+    "reviewsList": [
+      {
+        "user": "Anna",
+        "rating": 5,
+        "comment": "Great place, very clean! lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/women/1.jpg"
+      },
+      {
+        "user": "Mark",
+        "rating": 4,
+        "comment": "Nice location, but a bit noisy. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/men/2.jpg"
+      },
+      {
+        "user": "Liza",
+        "rating": 5,
+        "comment": "Loved it! Will book again.",
+        "avatar": "https://randomuser.me/api/portraits/women/3.jpg"
+      }
+    ],
+    "group": {
+      "id": "group-8",
+      "name": "r/LuxuryStays",
+      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/4.png"
+    },
+    "user": {
+      "id": "user-8",
+      "name": "u/Karen",
+      "image": null
+    }
+  },
+  {
+    "id": "9",
+    "title": "Simple Boarding Room",
+    "description": "Budget-friendly boarding house near the university.",
+    "created_at": "2025-07-20T09:00:00Z",
+    "upvotes": 40,
+    "nr_of_comments": 8,
+    "image": "https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=800&q=80",
+    "location": "Iligan City, Philippines",
+    "beds": "1 bed",
+    "rating": 4.0,
+    "reviews": 10,
+    "pricePerNight": "₱500 / night",
+    "filters": ["student", "budget", "boarding"],
+    "availability": "Available",
+    "type": "Boarding Room",
+    "postedAt": "2025-07-20",
+    "latitude": 8.4542,
+    "longitude": 124.6319,
+    "favorited": false,
+    "reviewsList": [
+      {
+        "user": "Anna",
+        "rating": 5,
+        "comment": "Great place, very clean! lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/women/1.jpg"
+      },
+      {
+        "user": "Mark",
+        "rating": 4,
+        "comment": "Nice location, but a bit noisy. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/men/2.jpg"
+      },
+      {
+        "user": "Liza",
+        "rating": 5,
+        "comment": "Loved it! Will book again.",
+        "avatar": "https://randomuser.me/api/portraits/women/3.jpg"
+      }
+    ],
+    "group": {
+      "id": "group-9",
+      "name": "r/StudentHousing",
+      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/3.png"
+    },
+    "user": {
+      "id": "user-9",
+      "name": "u/Paolo",
+      "image": null
+    }
+  },
+  {
+    "id": "10",
+    "title": "Treehouse Adventure",
+    "description": "Unique stay in a treehouse surrounded by nature.",
+    "created_at": "2025-07-15T06:45:00Z",
+    "upvotes": 110,
+    "nr_of_comments": 28,
+    "image": "https://images.unsplash.com/photo-1475856034135-8f3d9c59e85b?auto=format&fit=crop&w=800&q=80",
+    "location": "Davao del Sur, Philippines",
+    "beds": "1 bed",
+    "rating": 4.7,
+    "reviews": 40,
+    "pricePerNight": "₱3,500 / night",
+    "filters": ["treehouse", "adventure", "nature"],
+    "availability": "Available",
+    "type": "Treehouse",
+    "postedAt": "2025-07-15",
+    "latitude": 8.4542,
+    "longitude": 124.6319,
+    "favorited": true,
+    "reviewsList": [
+      {
+        "user": "Anna",
+        "rating": 5,
+        "comment": "Great place, very clean! lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/women/1.jpg"
+      },
+      {
+        "user": "Mark",
+        "rating": 4,
+        "comment": "Nice location, but a bit noisy. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/men/2.jpg"
+      },
+      {
+        "user": "Liza",
+        "rating": 5,
+        "comment": "Loved it! Will book again.",
+        "avatar": "https://randomuser.me/api/portraits/women/3.jpg"
+      }
+    ],
+    "group": {
+      "id": "group-10",
+      "name": "r/AdventureStays",
+      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/2.png"
+    },
+    "user": {
+      "id": "user-10",
+      "name": "u/Grace",
+      "image": null
+    }
+  },
+  {
+    "id": "11",
+    "title": "Beachfront Bungalow",
+    "description": "Private bungalow steps away from the beach.",
+    "created_at": "2025-07-10T08:20:00Z",
+    "upvotes": 130,
+    "nr_of_comments": 35,
+    "image": "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=800&q=80",
+    "location": "Panglao, Bohol, Philippines",
+    "beds": "2 beds",
+    "rating": 4.9,
+    "reviews": 65,
+    "pricePerNight": "₱6,500 / night",
+    "filters": ["beachfront", "romantic", "island"],
+    "availability": "Available",
+    "type": "Bungalow",
+    "postedAt": "2025-07-10",
+    "latitude": 8.4542,
+    "longitude": 124.6319,
+    "favorited": true,
+    "reviewsList": [
+      {
+        "user": "Anna",
+        "rating": 5,
+        "comment": "Great place, very clean! lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/women/1.jpg"
+      },
+      {
+        "user": "Mark",
+        "rating": 4,
+        "comment": "Nice location, but a bit noisy. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/men/2.jpg"
+      },
+      {
+        "user": "Liza",
+        "rating": 5,
+        "comment": "Loved it! Will book again.",
+        "avatar": "https://randomuser.me/api/portraits/women/3.jpg"
+      }
+    ],
+    "group": {
+      "id": "group-11",
+      "name": "r/IslandGetaways",
+      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/1.png"
+    },
+    "user": {
+      "id": "user-11",
+      "name": "u/Neil",
+      "image": null
+    }
+  },
+  {
+    "id": "12",
+    "title": "Budget Studio Apartment",
+    "description": "Compact studio ideal for backpackers or students.",
+    "created_at": "2025-07-05T16:00:00Z",
+    "upvotes": 38,
+    "nr_of_comments": 6,
+    "image": "https://images.unsplash.com/photo-1501183638710-841dd1904471?auto=format&fit=crop&w=800&q=80",
+    "location": "Manila, Philippines",
+    "beds": "1 bed",
+    "rating": 3.9,
+    "reviews": 12,
+    "pricePerNight": "₱700 / night",
+    "filters": ["budget", "student", "city"],
+    "availability": "Unavailable",
+    "type": "Studio",
+    "postedAt": "2025-07-05",
+    "latitude": 8.4542,
+    "longitude": 124.6319,
+    "favorited": true,
+    "reviewsList": [
+      {
+        "user": "Anna",
+        "rating": 5,
+        "comment": "Great place, very clean! lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/women/1.jpg"
+      },
+      {
+        "user": "Mark",
+        "rating": 4,
+        "comment": "Nice location, but a bit noisy. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/men/2.jpg"
+      },
+      {
+        "user": "Liza",
+        "rating": 5,
+        "comment": "Loved it! Will book again.",
+        "avatar": "https://randomuser.me/api/portraits/women/3.jpg"
+      }
+    ],
+    "group": {
+      "id": "group-12",
+      "name": "r/BudgetTravel",
+      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/12.png"
+    },
+    "user": {
+      "id": "user-12",
+      "name": "u/Carl",
+      "image": null
+    }
+  },
+  {
+    "id": "13",
+    "title": "Countryside Villa",
+    "description": "Spacious villa with private pool and gardens.",
+    "created_at": "2025-07-01T09:30:00Z",
+    "upvotes": 90,
+    "nr_of_comments": 22,
+    "image": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
+    "location": "Batangas, Philippines",
+    "beds": "4 beds",
+    "rating": 4.8,
+    "reviews": 55,
+    "pricePerNight": "₱8,000 / night",
+    "filters": ["villa", "countryside", "family"],
+    "availability": "Available",
+    "type": "Villa",
+    "postedAt": "2025-07-01",
+    "latitude": 8.4542,
+    "longitude": 124.6319,
+    "favorited": true,
+    "reviewsList": [
+      {
+        "user": "Anna",
+        "rating": 5,
+        "comment": "Great place, very clean! lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/women/1.jpg"
+      },
+      {
+        "user": "Mark",
+        "rating": 4,
+        "comment": "Nice location, but a bit noisy. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/men/2.jpg"
+      },
+      {
+        "user": "Liza",
+        "rating": 5,
+        "comment": "Loved it! Will book again.",
+        "avatar": "https://randomuser.me/api/portraits/women/3.jpg"
+      }
+    ],
+    "group": {
+      "id": "group-13",
+      "name": "r/VillaRentals",
+      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/13.png"
+    },
+    "user": {
+      "id": "user-13",
+      "name": "u/Daniel",
+      "image": null
+    }
+  },
+  {
+    "id": "14",
+    "title": "Hillside Cabin",
+    "description": "Cozy cabin with panoramic mountain views.",
+    "created_at": "2025-06-28T14:10:00Z",
+    "upvotes": 76,
+    "nr_of_comments": 15,
+    "image": "https://images.unsplash.com/photo-1505691938895-1758d7feb510?auto=format&fit=crop&w=800&q=80",
+    "location": "Sagada, Philippines",
+    "beds": "2 beds",
+    "rating": 4.6,
+    "reviews": 28,
+    "pricePerNight": "₱3,200 / night",
+    "filters": ["mountain", "cabin", "nature"],
+    "availability": "Available",
+    "type": "Cabin",
+    "postedAt": "2025-06-28",
+    "latitude": 8.4542,
+    "longitude": 124.6319,
+    "favorited": true,
+    "reviewsList": [
+      {
+        "user": "Anna",
+        "rating": 5,
+        "comment": "Great place, very clean! lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/women/1.jpg"
+      },
+      {
+        "user": "Mark",
+        "rating": 4,
+        "comment": "Nice location, but a bit noisy. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/men/2.jpg"
+      },
+      {
+        "user": "Liza",
+        "rating": 5,
+        "comment": "Loved it! Will book again.",
+        "avatar": "https://randomuser.me/api/portraits/women/3.jpg"
+      }
+    ],
+    "group": {
+      "id": "group-14",
+      "name": "r/MountainStays",
+      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/14.png"
+    },
+    "user": {
+      "id": "user-14",
+      "name": "u/Maya",
+      "image": null
+    }
+  },
+  {
+    "id": "15",
+    "title": "Capsule Pod Hotel",
+    "description": "Futuristic capsule pods for solo travelers.",
+    "created_at": "2025-06-20T21:00:00Z",
+    "upvotes": 55,
+    "nr_of_comments": 18,
+    "image": "https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&w=800&q=80",
+    "location": "Makati, Philippines",
+    "beds": "1 capsule",
+    "rating": 4.3,
+    "reviews": 32,
+    "pricePerNight": "₱900 / night",
+    "filters": ["capsule", "modern", "budget"],
+    "availability": "Available",
+    "type": "Capsule",
+    "postedAt": "2025-06-20",
+    "latitude": 8.4542,
+    "longitude": 124.6319,
+    "favorited": true,
+    "reviewsList": [
+      {
+        "user": "Anna",
+        "rating": 5,
+        "comment": "Great place, very clean! lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/women/1.jpg"
+      },
+      {
+        "user": "Mark",
+        "rating": 4,
+        "comment": "Nice location, but a bit noisy. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/men/2.jpg"
+      },
+      {
+        "user": "Liza",
+        "rating": 5,
+        "comment": "Loved it! Will book again.",
+        "avatar": "https://randomuser.me/api/portraits/women/3.jpg"
+      }
+    ],
+    "group": {
+      "id": "group-15",
+      "name": "r/UniqueStays",
+      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/15.png"
+    },
+    "user": {
+      "id": "user-15",
+      "name": "u/Leo",
+      "image": null
+    }
+  },
+  {
+    "id": "16",
+    "title": "Luxury Resort Suite",
+    "description": "Exclusive suite with oceanfront balcony.",
+    "created_at": "2025-06-15T10:45:00Z",
+    "upvotes": 200,
+    "nr_of_comments": 80,
+    "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80",
+    "location": "El Nido, Palawan, Philippines",
+    "beds": "1 king bed",
+    "rating": 5.0,
+    "reviews": 100,
+    "pricePerNight": "₱15,000 / night",
+    "filters": ["luxury", "resort", "oceanfront"],
+    "availability": "Unavailable",
+    "type": "Resort Suite",
+    "postedAt": "2025-06-15",
+    "latitude": 8.4542,
+    "longitude": 124.6319,
+    "favorited": true,
+    "reviewsList": [
+      {
+        "user": "Anna",
+        "rating": 5,
+        "comment": "Great place, very clean! lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/women/1.jpg"
+      },
+      {
+        "user": "Mark",
+        "rating": 4,
+        "comment": "Nice location, but a bit noisy. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/men/2.jpg"
+      },
+      {
+        "user": "Liza",
+        "rating": 5,
+        "comment": "Loved it! Will book again.",
+        "avatar": "https://randomuser.me/api/portraits/women/3.jpg"
+      }
+    ],
+    "group": {
+      "id": "group-16",
+      "name": "r/LuxuryResorts",
+      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/16.png"
+    },
+    "user": {
+      "id": "user-16",
+      "name": "u/Isabella",
+      "image": null
+    }
+  },
+  {
+    "id": "17",
+    "title": "Glamping Tent",
+    "description": "Luxury tent with comfortable amenities in nature.",
+    "created_at": "2025-06-10T07:00:00Z",
+    "upvotes": 65,
+    "nr_of_comments": 14,
+    "image": "https://images.unsplash.com/photo-1541417904950-b855846fe074?auto=format&fit=crop&w=800&q=80",
+    "location": "Tagaytay, Philippines",
+    "beds": "1 queen bed",
+    "rating": 4.4,
+    "reviews": 20,
+    "pricePerNight": "₱2,800 / night",
+    "filters": ["glamping", "tent", "nature"],
+    "availability": "Available",
+    "type": "Glamping Tent",
+    "postedAt": "2025-06-10",
+    "latitude": 8.4542,
+    "longitude": 124.6319,
+    "favorited": true,
+    "reviewsList": [
+      {
+        "user": "Anna",
+        "rating": 5,
+        "comment": "Great place, very clean! lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/women/1.jpg"
+      },
+      {
+        "user": "Mark",
+        "rating": 4,
+        "comment": "Nice location, but a bit noisy. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/men/2.jpg"
+      },
+      {
+        "user": "Liza",
+        "rating": 5,
+        "comment": "Loved it! Will book again.",
+        "avatar": "https://randomuser.me/api/portraits/women/3.jpg"
+      }
+    ],
+    "group": {
+      "id": "group-17",
+      "name": "r/GlampingPH",
+      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/17.png"
+    },
+    "user": {
+      "id": "user-17",
+      "name": "u/Ryan",
+      "image": null
+    }
+  },
+  {
+    "id": "18",
+    "title": "Eco Bamboo House",
+    "description": "Sustainable bamboo house near the forest.",
+    "created_at": "2025-06-05T12:25:00Z",
+    "upvotes": 85,
+    "nr_of_comments": 25,
+    "image": "https://images.unsplash.com/photo-1600585152220-90363fe7e115?auto=format&fit=crop&w=800&q=80",
+    "location": "Puerto Princesa, Palawan, Philippines",
+    "beds": "2 beds",
+    "rating": 4.7,
+    "reviews": 40,
+    "pricePerNight": "₱3,700 / night",
+    "filters": ["eco", "bamboo", "forest"],
+    "availability": "Available",
+    "type": "Eco House",
+    "postedAt": "2025-06-05",
+    "latitude": 8.4542,
+    "longitude": 124.6319,
+    "favorited": true,
+    "reviewsList": [
+      {
+        "user": "Anna",
+        "rating": 5,
+        "comment": "Great place, very clean! lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/women/1.jpg"
+      },
+      {
+        "user": "Mark",
+        "rating": 4,
+        "comment": "Nice location, but a bit noisy. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/men/2.jpg"
+      },
+      {
+        "user": "Liza",
+        "rating": 5,
+        "comment": "Loved it! Will book again.",
+        "avatar": "https://randomuser.me/api/portraits/women/3.jpg"
+      }
+    ],
+    "group": {
+      "id": "group-18",
+      "name": "r/EcoStays",
+      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/18.png"
+    },
+    "user": {
+      "id": "user-18",
+      "name": "u/Michelle",
+      "image": null
+    }
+  },
+  {
+    "id": "19",
+    "title": "Floating House",
+    "description": "Stay on the water in a floating house experience.",
+    "created_at": "2025-06-01T19:40:00Z",
+    "upvotes": 140,
+    "nr_of_comments": 48,
+    "image": "https://images.unsplash.com/photo-1617196030060-fd76a3f5bd8c?auto=format&fit=crop&w=800&q=80",
+    "location": "Camarines Sur, Philippines",
+    "beds": "2 beds",
+    "rating": 4.85,
+    "reviews": 60,
+    "pricePerNight": "₱5,200 / night",
+    "filters": ["floating", "unique", "water"],
+    "availability": "Available",
+    "type": "Floating House",
+    "postedAt": "2025-06-01",
+    "latitude": 8.4542,
+    "longitude": 124.6319,
+    "favorited": true,
+    "reviewsList": [
+      {
+        "user": "Anna",
+        "rating": 5,
+        "comment": "Great place, very clean! lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/women/1.jpg"
+      },
+      {
+        "user": "Mark",
+        "rating": 4,
+        "comment": "Nice location, but a bit noisy. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "avatar": "https://randomuser.me/api/portraits/men/2.jpg"
+      },
+      {
+        "user": "Liza",
+        "rating": 5,
+        "comment": "Loved it! Will book again.",
+        "avatar": "https://randomuser.me/api/portraits/women/3.jpg"
+      }
+    ],
+    "group": {
+      "id": "group-19",
+      "name": "r/UniqueStaysPH",
+      "image": "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/avatars/19.png"
+    },
+    "user": {
+      "id": "user-19",
+      "name": "u/Joseph",
+      "image": null
+    }
+  }
+]

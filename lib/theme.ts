@@ -1,0 +1,134 @@
+import { DarkTheme, DefaultTheme, type Theme } from "@react-navigation/native";
+import { useColorScheme } from "react-native";
+
+// Define a strong ThemeColors type so TS knows what properties exist
+export type ThemeColors = {
+  background: string;
+  foreground: string;
+  card: string;
+  cardForeground: string;
+  popover: string;
+  popoverForeground: string;
+  primary: string;             // 👉 used for main brand / button color
+  primaryForeground: string;
+  secondary: string;
+  secondaryForeground: string;
+  muted: string;
+  mutedForeground: string;
+  accent: string;
+  accentForeground: string;
+  destructive: string;
+  border: string;
+  input: string;
+  ring: string;
+  radius: string;
+  chart1: string;
+  chart2: string;
+  chart3: string;
+  chart4: string;
+  chart5: string;
+};
+
+export const THEME: Record<"light" | "dark", ThemeColors> = {
+  light: {
+    background: "hsl(0 0% 100%)",
+    foreground: "hsl(0 0% 3.9%)",
+    card: "hsl(0 0% 100%)",
+    cardForeground: "hsl(0 0% 3.9%)",
+    popover: "hsl(0 0% 100%)",
+    popoverForeground: "hsl(0 0% 3.9%)",
+    // primary: "hsl(252 80% 60%)",          // ~#6D28D9
+    primary: "hsl(229, 76%, 66%)",          // ~#6D28D9
+    primaryForeground: "hsl(0 0% 98%)",
+    secondary: "hsl(0 0% 96.1%)",
+    secondaryForeground: "hsl(0 0% 9%)",
+    muted: "hsl(0 0% 96.1%)",
+    mutedForeground: "hsl(0 0% 45.1%)",
+    accent: "hsl(0 0% 96.1%)",
+    accentForeground: "hsl(0 0% 9%)",
+    destructive: "hsl(0 84.2% 60.2%)",
+    border: "hsl(0 0% 89.8%)",
+    input: "hsl(0 0% 89.8%)",
+    ring: "hsl(252 60% 45%)",
+    radius: "0.625rem",
+    chart1: "hsl(12 76% 61%)",
+    chart2: "hsl(173 58% 39%)",
+    chart3: "hsl(197 37% 24%)",
+    chart4: "hsl(43 74% 66%)",
+    chart5: "hsl(27 87% 67%)",
+  },
+  dark: {
+    background: "hsl(0 0% 3.9%)",
+    // background: "hsl(6°, 2%, 4%)",
+    foreground: "hsl(0 0% 98%)",
+    card: "hsl(0 0% 3.9%)",
+    cardForeground: "hsl(0 0% 98%)",
+    popover: "hsl(0 0% 3.9%)",
+    popoverForeground: "hsl(0 0% 98%)",
+    // primary: "hsl(260 90% 65%)",          // ~#8B5CF6
+    primary: "hsl(229, 76%, 66%)",          // ~#8B5CF6
+    primaryForeground: "hsl(0 0% 10%)",
+    secondary: "hsl(0 0% 14.9%)",
+    secondaryForeground: "hsl(0 0% 98%)",
+    muted: "hsl(0 0% 14.9%)",
+    mutedForeground: "hsl(0 0% 63.9%)",
+    accent: "hsl(0 0% 14.9%)",
+    accentForeground: "hsl(0 0% 98%)",
+    destructive: "hsl(0 70.9% 59.4%)",
+    border: "hsl(0 0% 14.9%)",
+    input: "hsl(0 0% 14.9%)",
+    ring: "hsl(260 70% 55%)",
+    radius: "0.625rem",
+    chart1: "hsl(220 70% 50%)",
+    chart2: "hsl(160 60% 45%)",
+    chart3: "hsl(30 80% 55%)",
+    chart4: "hsl(280 65% 60%)",
+    chart5: "hsl(340 75% 55%)",
+  },
+};
+
+export const NAV_THEME: Record<"light" | "dark", Theme> = {
+  light: {
+    ...DefaultTheme,
+    colors: {
+      background: THEME.light.background,
+      border: THEME.light.border,
+      card: THEME.light.card,
+      notification: THEME.light.destructive,
+      primary: THEME.light.primary,   // ✅ purple
+      text: THEME.light.foreground,
+    },
+  },
+  dark: {
+    ...DarkTheme,
+    colors: {
+      background: THEME.dark.background,
+      border: THEME.dark.border,
+      card: THEME.dark.card,
+      notification: THEME.dark.destructive,
+      primary: THEME.dark.primary,    // ✅ purple
+      text: THEME.dark.foreground,
+    },
+  },
+};
+
+/**
+ * Hook to resolve theme based on user preference (light/dark/system)
+ */
+export function useAppTheme(
+  userPreference: "light" | "dark" | "system" = "system"
+) {
+  const systemScheme = useColorScheme(); // "light" | "dark" | null
+  const effectiveTheme: "light" | "dark" =
+    userPreference === "system"
+      ? systemScheme === "dark"
+        ? "dark"
+        : "light"
+      : userPreference;
+
+  return {
+    navTheme: NAV_THEME[effectiveTheme],
+    colors: THEME[effectiveTheme], // ✅ purple primary is here
+    mode: effectiveTheme,
+  };
+}

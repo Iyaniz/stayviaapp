@@ -1,0 +1,27 @@
+{
+  "cli": {
+    "version": ">= 16.19.3",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "node": "18.18.0",
+      "env": {
+        "SUPABASE_URL": "https://ptwhyrlrfmpyhkwmljlu.supabase.co",
+        "SUPABASE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.",
+        "CLERK_PUBLISHABLE_KEY": "pk_test_c3VwZXJiLWdsaWRlci03NS5jbGVyay5hY2NvdW50cy5kZXYk"
+      }
+    },
+    "preview": {
+      "distribution": "internal"
+    },
+    "production": {
+      "autoIncrement": true
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

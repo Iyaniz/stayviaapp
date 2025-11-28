@@ -1,0 +1,112 @@
+[
+  {
+    "id": "6",
+    "email": "jazel123@gmail.com",
+    "username": "jazel123",
+    "firstName": "Jazel",
+    "lastName": "Achas",
+    "avatar": "https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg",
+    "online": true,
+    "lastMessage": "Wow productive ko today 🥰",
+    "time": "11:02 PM"
+  },
+  {
+    "id": "7",
+    "email": "jessa456@gmail.com",
+    "username": "jessa456",
+    "firstName": "Jessa",
+    "lastName": "Orobia",
+    "avatar": "https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg",
+    "online": true,
+    "lastMessage": "Papasa ko atong gihatag na activity...",
+    "time": "8:47 PM"
+  },
+  {
+    "id": "8",
+    "email": "almonia789@gmail.com",
+    "username": "almonia789",
+    "firstName": "Almonia",
+    "lastName": "Rembrundt",
+    "avatar": "https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg",
+    "online": false,
+    "lastMessage": "You sent a photo.",
+    "time": "6:32 PM"
+  },
+  {
+    "id": "9",
+    "email": "danx3@gmail.com",
+    "username": "almonia789",
+    "firstName": "Dan Adrian",
+    "lastName": "Liboro",
+    "avatar": "https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg",
+    "online": false,
+    "lastMessage": "Hiling",
+    "time": "4:27 PM"
+  },
+  {
+    "id": "5",
+    "email": "harveykyuutt@gmail.com",
+    "username": "gwapo123",
+    "firstName": "Harvey",
+    "lastName": "Cute",
+    "avatar": "https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg",
+    "online": false,
+    "lastMessage": "Pasar namo guyss, congrats...",
+    "time": "3:35 PM"
+  },
+  {
+    "id": "1",
+    "email": "Wednesday123@gmail.com",
+    "username": "Wednesday123",
+    "firstName": "Jenna",
+    "lastName": "Ortega",
+    "avatar": "https://i.pinimg.com/736x/df/10/11/df1011d5f96b0a5a79e6a627fbddfeb9.jpg",
+    "online": true,
+    "lastMessage": "Begonee...",
+    "time": "11:02 PM"
+  },
+  {
+    "id": "2",
+    "email": "Enid4568@gmail.com",
+    "username": "Enid4568",
+    "firstName": "Emma",
+    "lastName": "Myers",
+    "avatar": "https://statico.soapcentral.com/editor/2025/08/25aab-17548184387776.jpg",
+    "online": true,
+    "lastMessage": "Manloloko kang taksil...",
+    "time": "8:47 PM"
+  },
+  {
+    "id": "3",
+    "email": "Thing@gmail.com",
+    "username": "Thing",
+    "firstName": "Thing",
+    "lastName": "Isaac",
+    "avatar": "https://static.wikia.nocookie.net/p__/images/4/41/Thing_%28Wednesday_2022%29.png/revision/latest?cb=20230221044832&path-prefix=protagonist",
+    "online": true,
+    "lastMessage": "Hi, I'm Thing.",
+    "time": "6:32 PM"
+  },
+  {
+    "id": "4",
+    "email": "mystery@gmail.com",
+    "username": "mystery456",
+    "firstName": "Agnes",
+    "lastName": "DeMille",
+    "avatar": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNgA6K2M7WDTsHz7M-G6ScAodPTtg5d_pNOw&sE",
+    "online": true,
+    "lastMessage": "Agnes called you.",
+    "time": "4:27 PM"
+  },
+  {
+    "id": "10",
+    "email": "harveykyuutt@gmail.com",
+    "username": "gwapo123",
+    "firstName": "John",
+    "lastName": "Gwapohh",
+    "avatar": "https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg",
+    "online": true,
+    "lastMessage": "Congratulations, Everyone.",
+    "time": "3:35 PM"
+  }
+]
