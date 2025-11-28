@@ -317,20 +317,7 @@ export default function Home() {
               <Ionicons name="filter-outline" size={18} color={colors.foreground} />
             </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={() => router.push('/(protected)/landlord-rentals')}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                backgroundColor: colors.card,
-                borderRadius: 20,
-                padding: 10,
-                borderWidth: 1,
-                borderColor: colors.border,
-                marginLeft: 6,
-              }}>
-              <Ionicons name="key-outline" size={18} color={colors.foreground} />
-            </TouchableOpacity>
+           
           </View>
         </View>
 
@@ -572,8 +559,8 @@ export default function Home() {
       </View>
 
       {/* Floating Add Post Button */}
-
-      <TouchableOpacity
+{currentAccountType === "landlord" &&
+<TouchableOpacity
         onPress={() => router.push('/(post)')}
         style={{
           position: 'absolute',
@@ -593,6 +580,7 @@ export default function Home() {
         }}>
         <Ionicons name="add" size={32} color="white" onPress={() => router.push('/(post)')} />
       </TouchableOpacity>
+}
     </SafeAreaView>
   );
 }
