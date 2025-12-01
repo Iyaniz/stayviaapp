@@ -87,6 +87,11 @@ export default function RatingsPage() {
       return dateB.getTime() - dateA.getTime(); // Most recent first
     });
 
+  // Debug: log the final rentals array
+  console.log('All rentals:', allRentals);
+  console.log('Rentals due for rating:', rentalsDueForRating);
+  console.log('Active rentals:', activeRentals);
+
   const formatDate = (dateString: string | null) => {
     if (!dateString) return '';
     try {
@@ -115,25 +120,34 @@ export default function RatingsPage() {
   };
 
   const getRentalCard = (rental: any) => {
+    // Debug: log rental structure
+    console.log('Rental data:', rental);
+
+    // Handle both data structures - some have post.id, others have post_id
+    const postId = rental.post?.id || rental.post_id;
+
     // Check if this rental has been rated
-    const rating = (userRatings || []).find((r: any) => r.post_id === rental.post.id);
+    const rating = (userRatings || []).find((r: any) => r.post_id === postId);
     const showRateButton = !rating;
+
+    const handlePress = () => {
+      console.log('Pressed rental:', rental.id, 'Post ID:', postId);
+      router.push({
+        pathname: `/(protected)/ratings/[id]`,
+        params: { id: rental.id },
+      });
+    };
 
     return (
       <TouchableOpacity
         key={rental.id}
-        onPress={() => {
-          router.push({
-            pathname: `/(protected)/ratings/[id]`,
-            params: { id: rental.id },
-          });
-        }}
+        onPress={handlePress}
         className="mb-3 rounded-lg border p-4"
         style={{ borderColor: colors.border, backgroundColor: colors.card }}>
         {/* Property Title */}
         <View className="mb-2 flex-row items-center justify-between">
           <Text className="flex-1 text-lg font-bold" style={{ color: colors.foreground }}>
-            {(rental as any).post?.title || 'Property'}
+            {rental.post?.title || 'Property'}
           </Text>
           {showRateButton && (
             <View className="ml-2 rounded-full bg-yellow-400 px-2 py-1">
@@ -214,6 +228,16 @@ export default function RatingsPage() {
 
         {/* All Rentals */}
         <View>
+          {/* Test button for debugging */}
+          <TouchableOpacity
+            onPress={() => {
+              console.log('Test button pressed');
+              router.push('/(protected)/ratings/test123');
+            }}
+            className="mb-4 rounded-lg bg-red-500 p-4">
+            <Text className="text-center font-bold text-white">Test Navigation</Text>
+          </TouchableOpacity>
+
           {allRentals.length === 0 ? (
             <View className="items-center justify-center py-12">
               <Ionicons name="home-outline" size={48} color={colors.foreground} />

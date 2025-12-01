@@ -363,12 +363,21 @@ export const getActiveRentals = async (userId: string, supabase: SupabaseClient<
     .from('requests')
     .select(
       `
-      *,
+      id,
+      rental_start_date,
+      rental_end_date,
+      monthly_rent_amount,
+      payment_day_of_month,
       post:post_id (
         id,
         title,
         price_per_night,
         user:user_id (id, firstname, lastname)
+      ),
+      user:user_id (
+        id,
+        firstname,
+        lastname
       )
     `
     )
