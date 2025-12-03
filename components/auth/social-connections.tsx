@@ -7,6 +7,7 @@ import { useSSO, type StartSSOFlowParams } from '@clerk/clerk-expo';
 import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
 import { useColorScheme } from 'nativewind';
+import Toast from 'react-native-toast-message';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -27,19 +28,49 @@ export function SocialConnections() {
 
   const onGoogleLoginPress = async () => {
     try {
-      // Make sure "scheme" matches the value in your app.json
       const redirectUri = AuthSession.makeRedirectUri({ scheme: 'stayvia' });
 
-      const { createdSessionId, setActive } = await startSSOFlow({
+      const { createdSessionId, setActive, signIn, signUp } = await startSSOFlow({
         strategy: 'oauth_google',
         redirectUrl: redirectUri,
       });
 
       if (createdSessionId) {
-        setActive?.({ session: createdSessionId });
+        await setActive?.({ session: createdSessionId });
+        Toast.show({
+          type: 'success',
+          text1: 'Welcome back!',
+          text2: 'You have successfully signed in.',
+        });
+      } else if (signIn?.status === 'complete') {
+        await setActive?.({ session: signIn.createdSessionId });
+        Toast.show({
+          type: 'success',
+          text1: 'Welcome back!',
+          text2: 'You have successfully signed in.',
+        });
+      } else if (signUp?.status === 'complete') {
+        await setActive?.({ session: signUp.createdSessionId });
+        Toast.show({
+          type: 'success',
+          text1: 'Account created!',
+          text2: 'Welcome to StayVia.',
+        });
+      } else {
+        const status = signIn?.status || signUp?.status || 'unknown';
+        Toast.show({
+          type: 'error',
+          text1: 'Login incomplete',
+          text2: `Status: ${status}. Please try again.`,
+        });
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Google SSO error:', err);
+      Toast.show({
+        type: 'error',
+        text1: 'Login failed',
+        text2: err?.message || 'Please try again.',
+      });
     }
   };
 
