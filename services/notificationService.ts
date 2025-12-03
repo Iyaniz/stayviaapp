@@ -29,20 +29,35 @@ export const notificationService = {
       }
 
       if (finalStatus !== 'granted') {
-        console.log('Notification permissions not granted');
+        console.log('ℹ️ Notification permissions not granted');
         return null;
       }
 
       // Only try to get push token on physical devices
       if (!Device.isDevice) {
-        console.log('Simulator - local notifications only (no push token)');
+        console.log('ℹ️ Simulator - local notifications only (no push token)');
         return null;
       }
 
-      const token = await Notifications.getExpoPushTokenAsync();
-      return token.data;
+      // Try to get push token, but don't fail if Firebase isn't configured
+      try {
+        const token = await Notifications.getExpoPushTokenAsync();
+        console.log('✅ Push token obtained successfully');
+        return token.data;
+      } catch (tokenError: any) {
+        // Check if it's a Firebase initialization error
+        if (tokenError?.message?.includes('FirebaseApp')) {
+          console.log('ℹ️ Firebase not configured - using local notifications only');
+          console.log(
+            'ℹ️ To enable push notifications, set up Firebase: https://docs.expo.dev/push-notifications/fcm-credentials/'
+          );
+        } else {
+          console.warn('⚠️ Could not get push token:', tokenError?.message);
+        }
+        return null;
+      }
     } catch (error) {
-      console.error('Error getting push token:', error);
+      console.error('❌ Error in getPushToken:', error);
       return null;
     }
   },

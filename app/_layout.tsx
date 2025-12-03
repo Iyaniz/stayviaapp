@@ -59,7 +59,12 @@ function Routes() {
   const supabase = useSupabase();
   const [userExists, setUserExists] = React.useState<boolean | null>(null);
 
-  console.log('🚀 App starting - User ID:', user?.id);
+  // Log user ID only when Clerk is loaded to avoid undefined logs
+  React.useEffect(() => {
+    if (isLoaded) {
+      console.log('🚀 App ready - User ID:', user?.id, '| Signed in:', isSignedIn);
+    }
+  }, [isLoaded, user?.id, isSignedIn]);
 
   // Initialize rental notifications hook
   useRentalNotifications();

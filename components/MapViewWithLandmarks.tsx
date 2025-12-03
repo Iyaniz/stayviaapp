@@ -6,10 +6,11 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
-import MapView, { Marker, Circle } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import { Landmark, getPlaceTypeIcon } from '@/services/mapService';
+import OpenStreetMap from './OpenStreetMap';
 
 interface MapViewWithLandmarksProps {
   latitude: number;
@@ -20,20 +21,22 @@ interface MapViewWithLandmarksProps {
   colors: any;
   onRadiusChange?: (radius: number) => void;
   radius?: number;
-  // 🗺️ Removed category filtering - using Google Maps prominence ranking!
+  onCategoryChange?: (category: string) => void;
+  category?: string;
 }
-
-// Dynamic zoom calculation based on radius
-// Converts meters to degrees (approximate, 1 degree ≈ 111km)
-const calculateDelta = (radius: number) => {
-  // Add 50% padding to ensure the circle fits comfortably
-  const paddedRadius = radius * 1.5;
-  return (paddedRadius / 111000) * 2; // Convert to degrees with padding
-};
 
 const ITEMS_PER_PAGE = 10;
 
-// 🗑️ Removed CATEGORY_FILTERS - now using Google Maps prominence ranking!
+const CATEGORY_FILTERS = [
+  { id: 'essentials', label: 'Essentials', icon: 'star-outline' },
+  { id: 'all', label: 'All', icon: 'apps-outline' },
+  { id: 'education', label: 'Education', icon: 'school-outline' },
+  { id: 'health', label: 'Health', icon: 'medical-outline' },
+  { id: 'entertainment', label: 'Entertainment', icon: 'game-controller-outline' },
+  { id: 'finance', label: 'Finance', icon: 'card-outline' },
+  { id: 'services', label: 'Services', icon: 'construct-outline' },
+  { id: 'worship', label: 'Worship', icon: 'heart-outline' },
+];
 
 export default function MapViewWithLandmarks({
   latitude,
@@ -44,16 +47,13 @@ export default function MapViewWithLandmarks({
   colors,
   onRadiusChange,
   radius = 500,
+  onCategoryChange,
+  category = 'essentials',
 }: MapViewWithLandmarksProps) {
   const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(null);
   const [currentRadius, setCurrentRadius] = useState(radius);
   const [currentPage, setCurrentPage] = useState(1);
-  const [mapRegion, setMapRegion] = useState({
-    latitude,
-    longitude,
-    latitudeDelta: calculateDelta(radius),
-    longitudeDelta: calculateDelta(radius),
-  });
+  const [selectedCategory, setSelectedCategory] = useState(category);
 
   const handleLandmarkPress = (landmark: Landmark) => {
     setSelectedLandmark(selectedLandmark?.name === landmark.name ? null : landmark);
@@ -63,26 +63,110 @@ export default function MapViewWithLandmarks({
     setCurrentRadius(newRadius);
     setSelectedLandmark(null);
     setCurrentPage(1);
-    // Update map region to zoom appropriately for new radius
-    setMapRegion({
-      latitude,
-      longitude,
-      latitudeDelta: calculateDelta(newRadius),
-      longitudeDelta: calculateDelta(newRadius),
-    });
     if (onRadiusChange) {
       onRadiusChange(newRadius);
     }
   };
 
-  // 🗑️ Removed handleCategoryChange - using Google Maps prominence ranking!
+  const handleCategoryChange = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+    setSelectedLandmark(null);
+    setCurrentPage(1);
+    if (onCategoryChange) {
+      onCategoryChange(categoryId);
+    }
+  };
 
   const getRadiusText = () => {
     return currentRadius >= 1000 ? `${currentRadius / 1000}km` : `${currentRadius}m`;
   };
 
-  // Landmarks are already filtered by category from the API
-  const filteredLandmarks = landmarks;
+  // Filter landmarks by category
+  const filterByCategory = (landmark: Landmark, category: string): boolean => {
+    // Check both the formatted type and all raw types from Google API
+    const displayType = landmark.type.toLowerCase();
+    const allTypes = landmark.allTypes?.map((t) => t.toLowerCase()) || [];
+
+    const hasType = (keywords: string[]) => {
+      return keywords.some(
+        (keyword) =>
+          displayType.includes(keyword) || allTypes.some((type) => type.includes(keyword))
+      );
+    };
+
+    switch (category) {
+      case 'essentials':
+        // Show top essential places (high ratings and popular, or critical services)
+        const isCritical = hasType([
+          'hospital',
+          'pharmacy',
+          'supermarket',
+          'bank',
+          'atm',
+          'police',
+        ]);
+        const isHighRated =
+          (landmark.rating &&
+            landmark.rating >= 4.0 &&
+            landmark.userRatingsTotal &&
+            landmark.userRatingsTotal >= 20) ||
+          false;
+        return isCritical || isHighRated;
+
+      case 'all':
+        return true;
+
+      case 'education':
+        return hasType(['school', 'university', 'library', 'education']);
+
+      case 'health':
+        return hasType([
+          'hospital',
+          'pharmacy',
+          'doctor',
+          'dentist',
+          'clinic',
+          'medical',
+          'health',
+          'physiotherapist',
+          'veterinary',
+          'gym',
+          'spa',
+        ]);
+
+      case 'entertainment':
+        return hasType([
+          'cinema',
+          'movie',
+          'park',
+          'museum',
+          'theater',
+          'amusement',
+          'zoo',
+          'aquarium',
+          'stadium',
+          'bowling',
+          'night_club',
+          'tourist',
+        ]);
+
+      case 'finance':
+        return hasType(['bank', 'atm', 'finance', 'insurance', 'accounting']);
+
+      case 'services':
+        return hasType(['post', 'police', 'fire', 'government', 'embassy', 'courthouse']);
+
+      case 'worship':
+        return hasType(['church', 'mosque', 'temple', 'worship', 'synagogue', 'hindu']);
+
+      default:
+        return true;
+    }
+  };
+
+  const filteredLandmarks = landmarks.filter((landmark) =>
+    filterByCategory(landmark, selectedCategory)
+  );
 
   // Paginate landmarks
   const totalPages = Math.ceil(filteredLandmarks.length / ITEMS_PER_PAGE);
@@ -92,68 +176,131 @@ export default function MapViewWithLandmarks({
 
   const displayedLandmarks = selectedLandmark ? [selectedLandmark] : paginatedLandmarks;
 
+  // Get category-specific colors
+  const getCategoryColor = (type: string): string => {
+    const colorMap: Record<string, string> = {
+      // Education - Blue
+      School: '#3B82F6',
+      University: '#3B82F6',
+      Library: '#6366F1',
+
+      // Transportation - Purple
+      'Bus Terminal': '#8B5CF6',
+      'Train Terminal': '#8B5CF6',
+      'Transit Terminal': '#8B5CF6',
+      Airport: '#7C3AED',
+
+      // Shopping - Pink
+      Mall: '#EC4899',
+      Supermarket: '#EC4899',
+      'Convenience Store': '#F472B6',
+      Store: '#F472B6',
+
+      // Food & Dining - Orange
+      Restaurant: '#F59E0B',
+      Cafe: '#F59E0B',
+      Bakery: '#FB923C',
+      'Fast Food': '#FB923C',
+      Bar: '#EA580C',
+
+      // Health & Wellness - Red
+      Hospital: '#EF4444',
+      Pharmacy: '#EF4444',
+      Doctor: '#F87171',
+      Gym: '#DC2626',
+
+      // Finance - Green
+      Bank: '#10B981',
+      ATM: '#10B981',
+
+      // Services - Cyan
+      'Post Office': '#06B6D4',
+      'Police Station': '#0891B2',
+      'Fire Station': '#DC2626',
+
+      // Entertainment - Yellow
+      Cinema: '#EAB308',
+      Park: '#84CC16',
+      'Amusement Park': '#FDE047',
+      Museum: '#CA8A04',
+
+      // Worship - Indigo
+      Church: '#6366F1',
+      Mosque: '#6366F1',
+      Temple: '#6366F1',
+      'Place of Worship': '#6366F1',
+    };
+
+    return colorMap[type] || '#F59E0B'; // Default orange
+  };
+
+  // Prepare markers for OpenStreetMap with category info
+  const mapMarkers = [
+    // Property marker - ALWAYS VISIBLE (isPrimary = true)
+    {
+      latitude,
+      longitude,
+      title,
+      color: '#667EEA',
+      icon: getPlaceTypeIcon('Property'), // Home icon for property
+      isPrimary: true, // This prevents clustering
+    },
+    // Landmark markers - These will cluster
+    ...filteredLandmarks
+      .filter((landmark) => {
+        if (selectedLandmark) {
+          return landmark.name === selectedLandmark.name;
+        }
+        return true;
+      })
+      .map((landmark) => ({
+        latitude: landmark.latitude,
+        longitude: landmark.longitude,
+        title: `${landmark.name} - ${landmark.type}`,
+        color: getCategoryColor(landmark.type),
+        category: landmark.type,
+        icon: getPlaceTypeIcon(landmark.type),
+        isPrimary: false, // This allows clustering
+      })),
+  ];
+
+  // Prepare circles
+  const mapCircles = [
+    {
+      latitude,
+      longitude,
+      radius: currentRadius,
+      color: '#667EEA',
+    },
+  ];
+
   return (
-    <View>
-      {/* Map */}
-      <View style={styles.mapContainer}>
-        <MapView
+    <View style={styles.container}>
+      {/* Modern Map */}
+      <View 
+        style={styles.mapContainer}
+        onStartShouldSetResponder={() => Platform.OS === 'android'}
+        onMoveShouldSetResponder={() => Platform.OS === 'android'}
+        onResponderGrant={() => {}}
+        onResponderMove={() => {}}
+        onResponderRelease={() => {}}
+        onResponderTerminationRequest={() => false}>
+        <OpenStreetMap
+          center={{ latitude, longitude }}
+          zoom={15}
+          markers={mapMarkers}
+          circles={mapCircles}
           style={styles.map}
-          region={mapRegion}
-          onRegionChangeComplete={setMapRegion}
-          scrollEnabled={true}
-          zoomEnabled={true}
-          rotateEnabled={true}
-          pitchEnabled={true}>
-          {/* Radius circle */}
-          <Circle
-            center={{ latitude, longitude }}
-            radius={currentRadius}
-            strokeColor="rgba(102, 126, 234, 0.5)"
-            fillColor="rgba(102, 126, 234, 0.1)"
-            strokeWidth={2}
-          />
-
-          {/* Property marker */}
-          <Marker coordinate={{ latitude, longitude }} title={title}>
-            <View style={styles.propertyMarker}>
-              <Ionicons name="location" size={36} color="#667EEA" />
-            </View>
-          </Marker>
-
-          {/* Landmark markers */}
-          {filteredLandmarks.map((landmark, index) => {
-            const isSelected = selectedLandmark && selectedLandmark.name === landmark.name;
-            const shouldShow = !selectedLandmark || isSelected;
-
-            if (!shouldShow) return null;
-
-            return (
-              <Marker
-                key={`landmark-${index}`}
-                coordinate={{
-                  latitude: landmark.latitude,
-                  longitude: landmark.longitude,
-                }}
-                title={landmark.name}
-                description={`${landmark.type} • ${landmark.distance}km away`}>
-                <View style={styles.landmarkMarker}>
-                  <Ionicons
-                    name={getPlaceTypeIcon(landmark.type) as any}
-                    size={18}
-                    color="#667EEA"
-                  />
-                </View>
-              </Marker>
-            );
-          })}
-        </MapView>
+        />
       </View>
 
-      {/* Radius selector */}
+      {/* Radius selector with modern design */}
       <View style={[styles.radiusContainer, { backgroundColor: colors.card }]}>
         <View style={styles.radiusHeader}>
           <View style={styles.radiusLabelContainer}>
-            <Ionicons name="radio-outline" size={16} color={colors.primary} />
+            <View style={styles.iconBadge}>
+              <Ionicons name="navigate-circle-outline" size={16} color={colors.primary} />
+            </View>
             <Text style={[styles.radiusLabel, { color: colors.foreground }]}>Search Radius</Text>
           </View>
           <View style={[styles.radiusBadge, { backgroundColor: colors.primary }]}>
@@ -162,7 +309,7 @@ export default function MapViewWithLandmarks({
         </View>
 
         <View style={styles.radiusButtons}>
-          {[200, 500, 750].map((radiusOption) => (
+          {[200, 500, 750, 1000].map((radiusOption) => (
             <TouchableOpacity
               key={radiusOption}
               style={[
@@ -187,20 +334,62 @@ export default function MapViewWithLandmarks({
         </View>
       </View>
 
-      {/* 🗺️ Category filters removed - now using Google Maps prominence ranking! */}
+      {/* Category filters with modern design */}
+      <View style={[styles.filterContainer, { backgroundColor: colors.card }]}>
+        <View style={styles.filterHeader}>
+          <View style={styles.iconBadge}>
+            <Ionicons name="filter-outline" size={16} color={colors.primary} />
+          </View>
+          <Text style={[styles.filterLabel, { color: colors.foreground }]}>Place Category</Text>
+        </View>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.filterChips}>
+          {CATEGORY_FILTERS.map((filter) => (
+            <TouchableOpacity
+              key={filter.id}
+              style={[
+                styles.filterChip,
+                {
+                  backgroundColor:
+                    selectedCategory === filter.id ? colors.primary : colors.background,
+                  borderColor:
+                    selectedCategory === filter.id ? colors.primary : colors.border || '#e5e7eb',
+                },
+              ]}
+              onPress={() => handleCategoryChange(filter.id)}>
+              <Ionicons
+                name={filter.icon as any}
+                size={14}
+                color={selectedCategory === filter.id ? '#fff' : colors.foreground}
+              />
+              <Text
+                style={[
+                  styles.filterChipText,
+                  { color: selectedCategory === filter.id ? '#fff' : colors.foreground },
+                ]}>
+                {filter.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
 
-      {/* Landmarks count */}
+      {/* Landmarks count with modern design */}
       {!isLoading && (
         <View style={[styles.infoCard, { backgroundColor: colors.card }]}>
-          <Ionicons name="location-outline" size={18} color={colors.primary} />
+          <View style={styles.iconBadge}>
+            <Ionicons name="location-outline" size={18} color={colors.primary} />
+          </View>
           <Text style={[styles.infoText, { color: colors.foreground }]}>
-            {filteredLandmarks.length} {filteredLandmarks.length === 1 ? 'place' : 'places'} •{' '}
-            {getRadiusText()} radius
+            <Text style={{ fontWeight: '700' }}>{filteredLandmarks.length}</Text>{' '}
+            {filteredLandmarks.length === 1 ? 'place' : 'places'} • {getRadiusText()} radius
           </Text>
         </View>
       )}
 
-      {/* Loading */}
+      {/* Loading with modern design */}
       {isLoading && (
         <View style={[styles.loadingContainer, { backgroundColor: colors.card }]}>
           <ActivityIndicator size="small" color={colors.primary} />
@@ -210,7 +399,7 @@ export default function MapViewWithLandmarks({
         </View>
       )}
 
-      {/* Landmarks list */}
+      {/* Landmarks list with modern design */}
       {!isLoading && landmarks.length > 0 && (
         <View style={[styles.landmarksContainer, { backgroundColor: colors.card }]}>
           <View style={styles.landmarksHeader}>
@@ -222,7 +411,7 @@ export default function MapViewWithLandmarks({
             </Text>
             {selectedLandmark && (
               <TouchableOpacity
-                style={styles.clearButton}
+                style={[styles.clearButton, { backgroundColor: colors.primary + '15' }]}
                 onPress={() => setSelectedLandmark(null)}>
                 <Text style={[styles.clearButtonText, { color: colors.primary }]}>Show All</Text>
               </TouchableOpacity>
@@ -240,45 +429,56 @@ export default function MapViewWithLandmarks({
                   style={[
                     styles.landmarkItem,
                     { backgroundColor: colors.background, borderColor: colors.border || '#e5e7eb' },
-                    isSelected && { backgroundColor: '#FEF3C7', borderColor: '#F59E0B' },
+                    isSelected && {
+                      backgroundColor: colors.primary + '10',
+                      borderColor: colors.primary,
+                      borderWidth: 2,
+                    },
                   ]}
                   onPress={() => handleLandmarkPress(landmark)}>
                   <View
                     style={[
                       styles.landmarkIconContainer,
-                      {
-                        backgroundColor: isSelected ? '#FEF3C7' : colors.background,
-                        borderWidth: isSelected ? 1 : 0,
-                        borderColor: '#F59E0B',
+                      isSelected && {
+                        backgroundColor: colors.primary,
                       },
                     ]}>
                     <Ionicons
                       name={getPlaceTypeIcon(landmark.type) as any}
-                      size={16}
-                      color={isSelected ? '#F59E0B' : colors.primary}
+                      size={18}
+                      color={isSelected ? '#fff' : colors.primary}
                     />
                   </View>
                   <View style={styles.landmarkInfo}>
-                    <Text style={[styles.landmarkName, { color: colors.foreground }]}>
+                    <Text
+                      style={[styles.landmarkName, { color: colors.foreground }]}
+                      numberOfLines={1}>
                       {landmark.name}
                     </Text>
                     <Text style={[styles.landmarkDetails, { color: colors.mutedForeground }]}>
                       {landmark.type} • {landmark.distance}km away
                     </Text>
                     {landmark.rating && (
-                      <Text style={[styles.landmarkRating, { color: colors.mutedForeground }]}>
-                        ⭐ {landmark.rating.toFixed(1)}{' '}
-                        {landmark.userRatingsTotal && `(${landmark.userRatingsTotal} reviews)`}
-                      </Text>
+                      <View style={styles.ratingContainer}>
+                        <Ionicons name="star" size={12} color="#F59E0B" />
+                        <Text style={[styles.landmarkRating, { color: colors.mutedForeground }]}>
+                          {landmark.rating.toFixed(1)}{' '}
+                          {landmark.userRatingsTotal && `(${landmark.userRatingsTotal})`}
+                        </Text>
+                      </View>
                     )}
                   </View>
-                  {isSelected && <Ionicons name="checkmark-circle" size={20} color="#F59E0B" />}
+                  {isSelected && (
+                    <View style={[styles.selectedBadge, { backgroundColor: colors.primary }]}>
+                      <Ionicons name="checkmark" size={16} color="#fff" />
+                    </View>
+                  )}
                 </TouchableOpacity>
               );
             })}
           </ScrollView>
 
-          {/* Pagination */}
+          {/* Pagination with modern design */}
           {!selectedLandmark && totalPages > 1 && (
             <View
               style={[styles.paginationContainer, { borderTopColor: colors.border || '#e5e7eb' }]}>
@@ -297,6 +497,11 @@ export default function MapViewWithLandmarks({
                   ]}
                   onPress={() => setCurrentPage(currentPage - 1)}
                   disabled={currentPage === 1}>
+                  <Ionicons
+                    name="chevron-back"
+                    size={16}
+                    color={currentPage === 1 ? colors.mutedForeground : '#fff'}
+                  />
                   <Text
                     style={[
                       styles.paginationButtonText,
@@ -324,6 +529,11 @@ export default function MapViewWithLandmarks({
                     ]}>
                     Next
                   </Text>
+                  <Ionicons
+                    name="chevron-forward"
+                    size={16}
+                    color={currentPage === totalPages ? colors.mutedForeground : '#fff'}
+                  />
                 </TouchableOpacity>
               </View>
             </View>
@@ -333,9 +543,12 @@ export default function MapViewWithLandmarks({
 
       {!isLoading && landmarks.length === 0 && (
         <View style={[styles.emptyContainer, { backgroundColor: colors.card }]}>
-          <Ionicons name="location-outline" size={48} color={colors.mutedForeground} />
+          <View style={styles.emptyIcon}>
+            <Ionicons name="location-outline" size={48} color={colors.primary} />
+          </View>
+          <Text style={[styles.emptyTitle, { color: colors.foreground }]}>No places found</Text>
           <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
-            No places found within {getRadiusText()}
+            Try increasing the search radius to find more places nearby
           </Text>
         </View>
       )}
@@ -344,79 +557,131 @@ export default function MapViewWithLandmarks({
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   mapContainer: {
-    height: 300,
-    borderRadius: 12,
+    height: 320,
+    borderRadius: 16,
     overflow: 'hidden',
-    marginBottom: 12,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
   },
   map: {
     width: '100%',
     height: '100%',
   },
-  propertyMarker: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  landmarkMarker: {
-    backgroundColor: 'white',
-    padding: 6,
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: '#667EEA',
-  },
   radiusContainer: {
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 12,
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   radiusHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   radiusLabelContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 10,
+  },
+  iconBadge: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   radiusLabel: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '600',
   },
   radiusBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 20,
   },
   radiusBadgeText: {
     color: 'white',
-    fontSize: 12,
-    fontWeight: '600',
+    fontSize: 13,
+    fontWeight: '700',
   },
   radiusButtons: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: 10,
   },
   radiusButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
-    borderWidth: 1,
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 12,
+    borderWidth: 2,
   },
   radiusButtonText: {
-    fontSize: 12,
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  filterContainer: {
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  filterHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 16,
+  },
+  filterLabel: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  filterChips: {
+    flexDirection: 'row',
+    gap: 10,
+    paddingRight: 16,
+  },
+  filterChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+    borderWidth: 2,
+    gap: 6,
+  },
+  filterChipText: {
+    fontSize: 13,
     fontWeight: '600',
   },
   infoCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
-    borderRadius: 12,
-    marginBottom: 12,
-    gap: 8,
+    padding: 16,
+    borderRadius: 16,
+    marginBottom: 16,
+    gap: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   infoText: {
     fontSize: 14,
@@ -426,139 +691,145 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 12,
-    gap: 8,
+    padding: 20,
+    borderRadius: 16,
+    marginBottom: 16,
+    gap: 12,
   },
   loadingText: {
     fontSize: 14,
+    fontWeight: '500',
   },
   landmarksContainer: {
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 12,
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   landmarksHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   landmarksTitle: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 15,
+    fontWeight: '700',
+    flex: 1,
   },
   clearButton: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
   },
   clearButtonText: {
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   landmarksList: {
-    maxHeight: 300,
+    maxHeight: 400,
   },
   landmarkItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 8,
+    padding: 14,
+    borderRadius: 12,
+    marginBottom: 10,
     borderWidth: 1,
   },
   landmarkIconContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 40,
+    height: 40,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
+    marginRight: 14,
   },
   landmarkInfo: {
     flex: 1,
   },
   landmarkName: {
     fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 2,
+    fontWeight: '700',
+    marginBottom: 4,
   },
   landmarkDetails: {
     fontSize: 12,
+    marginBottom: 4,
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 2,
   },
   landmarkRating: {
     fontSize: 11,
-    marginTop: 2,
-    fontWeight: '500',
+    fontWeight: '600',
+  },
+  selectedBadge: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   emptyContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 24,
-    borderRadius: 12,
-    marginBottom: 12,
+    padding: 40,
+    borderRadius: 16,
+    marginBottom: 16,
+  },
+  emptyIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 8,
   },
   emptyText: {
     fontSize: 14,
-    marginTop: 8,
-  },
-  filterContainer: {
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 12,
-  },
-  filterHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 12,
-  },
-  filterLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  filterChips: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  filterChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    gap: 6,
-  },
-  filterChipText: {
-    fontSize: 12,
-    fontWeight: '600',
+    textAlign: 'center',
+    marginTop: 4,
   },
   paginationContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 12,
-    paddingTop: 12,
+    marginTop: 16,
+    paddingTop: 16,
     borderTopWidth: 1,
   },
   paginationInfo: {
-    fontSize: 12,
-    fontWeight: '500',
+    fontSize: 13,
+    fontWeight: '600',
   },
   paginationButtons: {
     flexDirection: 'row',
     gap: 8,
   },
   paginationButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
+    flexDirection: 'row',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 10,
     borderWidth: 1,
+    alignItems: 'center',
+    gap: 4,
   },
   paginationButtonText: {
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
   },
 });
