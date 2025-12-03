@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
 import { useSSO, type StartSSOFlowParams } from '@clerk/clerk-expo';
-import * as AuthSession from 'expo-auth-session';
+import * as Linking from 'expo-linking';
 import * as WebBrowser from 'expo-web-browser';
 import { useColorScheme } from 'nativewind';
 import Toast from 'react-native-toast-message';
@@ -28,7 +28,11 @@ export function SocialConnections() {
 
   const onGoogleLoginPress = async () => {
     try {
-      const redirectUri = AuthSession.makeRedirectUri({ scheme: 'stayvia' });
+      // Use Linking.createURL for better release build compatibility
+      const redirectUri = Linking.createURL('oauth-callback');
+      
+      // Debug: Show redirect URL
+      console.log('Redirect URI:', redirectUri);
 
       const { createdSessionId, setActive, signIn, signUp } = await startSSOFlow({
         strategy: 'oauth_google',
@@ -56,12 +60,32 @@ export function SocialConnections() {
           text1: 'Account created!',
           text2: 'Welcome to StayVia.',
         });
+      } else if (signIn?.status === 'needs_identifier' || signUp?.status === 'missing_requirements') {
+        // OAuth returned but Clerk needs more info - show detailed debug info
+        const missingFields = signUp?.missingFields?.join(', ') || 'none';
+        const signInId = signIn?.identifier || 'none';
+        Toast.show({
+          type: 'info',
+          text1: `SignIn: ${signIn?.status || 'none'}`,
+          text2: `Missing: ${missingFields}, ID: ${signInId}`,
+          visibilityTime: 6000,
+        });
+      } else if (signIn?.status === 'needs_first_factor') {
+        Toast.show({
+          type: 'info',
+          text1: 'Verification needed',
+          text2: 'Please complete verification to continue.',
+          visibilityTime: 4000,
+        });
       } else {
-        const status = signIn?.status || signUp?.status || 'unknown';
+        // Debug: show all available info
+        const signInStatus = signIn?.status || 'none';
+        const signUpStatus = signUp?.status || 'none';
         Toast.show({
           type: 'error',
           text1: 'Login incomplete',
-          text2: `Status: ${status}. Please try again.`,
+          text2: `SignIn: ${signInStatus}, SignUp: ${signUpStatus}`,
+          visibilityTime: 5000,
         });
       }
     } catch (err: any) {
@@ -70,6 +94,7 @@ export function SocialConnections() {
         type: 'error',
         text1: 'Login failed',
         text2: err?.message || 'Please try again.',
+        visibilityTime: 4000,
       });
     }
   };
