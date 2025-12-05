@@ -106,6 +106,58 @@ export const notificationService = {
   },
 
   /**
+   * Schedule rating reminder notification for 7 days after move-in date
+   * This notification will fire even when the app is closed
+   */
+  async scheduleRatingReminderNotification(
+    rentalId: string,
+    postTitle: string,
+    moveInDate: string | Date
+  ) {
+    try {
+      const moveIn = typeof moveInDate === 'string' ? new Date(moveInDate) : moveInDate;
+      const notificationDate = new Date(moveIn);
+      notificationDate.setDate(notificationDate.getDate() + 7);
+
+      // Don't schedule if the date is in the past
+      if (notificationDate <= new Date()) {
+        console.log('⚠️ Notification date is in the past, sending immediately instead');
+        await this.sendRatingReminderNotification(postTitle);
+        return;
+      }
+
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: '⭐ Time to rate your stay!',
+          body: `It's time to rate your experience at ${postTitle}. Share your feedback!`,
+          data: {
+            type: 'rating_reminder',
+            action: 'open_ratings',
+            rentalId,
+          },
+          sound: true,
+          badge: 1,
+        },
+        trigger: {
+          date: notificationDate,
+        },
+      });
+
+      console.log(
+        `✅ Scheduled rating notification for rental ${rentalId} on ${notificationDate.toISOString()}`
+      );
+    } catch (error) {
+      console.error('Error scheduling rating reminder notification:', error);
+      // Fallback to immediate notification if scheduling fails
+      try {
+        await this.sendRatingReminderNotification(postTitle);
+      } catch (fallbackError) {
+        console.error('Error sending fallback notification:', fallbackError);
+      }
+    }
+  },
+
+  /**
    * Send payment reminder notification to tenant
    */
   async sendPaymentReminderNotification(tenantName: string, amount: number, dueDate: string) {

@@ -3,6 +3,15 @@ import { Database, Tables } from '@/types/database.types';
 
 type Payment = Tables<'payments'>;
 
+// Helper function to format date as YYYY-MM-DD
+// Uses UTC methods to avoid timezone issues when dates are stored as UTC
+const formatLocalDate = (date: Date): string => {
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 export const paymentService = {
   /**
    * Create payments for an entire rental period
@@ -20,54 +29,96 @@ export const paymentService = {
     supabase: SupabaseClient<Database>
   ) {
     const payments: Partial<Payment>[] = [];
-    const startDate = new Date(rentalStartDate);
-    const endDate = new Date(rentalEndDate);
+
+    // Parse dates as YYYY-MM-DD strings to avoid timezone issues
+    const parseDate = (dateStr: string) => {
+      const [year, month, day] = dateStr.split('T')[0].split('-').map(Number);
+      return { year, month: month - 1, day }; // month is 0-indexed
+    };
+
+    const start = parseDate(rentalStartDate);
+    const end = parseDate(rentalEndDate);
+
+    // Create Date objects at noon UTC to avoid timezone edge cases
+    const startDate = new Date(Date.UTC(start.year, start.month, start.day, 12, 0, 0));
+    const endDate = new Date(Date.UTC(end.year, end.month, end.day, 12, 0, 0));
 
     // Generate payment dates for each month
+    console.log('💳 Creating payments for rental:', {
+      startDate: rentalStartDate,
+      endDate: rentalEndDate,
+      paymentDay: paymentDayOfMonth,
+      monthlyRent,
+    });
+
     let currentDate = new Date(startDate);
     while (currentDate <= endDate) {
-      const year = currentDate.getFullYear();
-      const month = currentDate.getMonth();
+      const year = currentDate.getUTCFullYear();
+      const month = currentDate.getUTCMonth();
 
-      // Create payment date for this month
-      let paymentDate = new Date(year, month, paymentDayOfMonth);
+      // Create payment date for this month at noon UTC
+      let paymentDate = new Date(Date.UTC(year, month, paymentDayOfMonth, 12, 0, 0));
 
       // If payment day is beyond the last day of month, use last day
-      const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
+      const lastDayOfMonth = new Date(Date.UTC(year, month + 1, 0, 12, 0, 0)).getUTCDate();
       if (paymentDayOfMonth > lastDayOfMonth) {
-        paymentDate = new Date(year, month, lastDayOfMonth);
+        paymentDate = new Date(Date.UTC(year, month, lastDayOfMonth, 12, 0, 0));
       }
+
+      console.log('💳 Checking payment date:', {
+        paymentDate: formatLocalDate(paymentDate),
+        startDate: formatLocalDate(startDate),
+        endDate: formatLocalDate(endDate),
+        isWithinRange: paymentDate >= startDate && paymentDate <= endDate,
+      });
 
       // Only add if payment date is within rental period
       if (paymentDate >= startDate && paymentDate <= endDate) {
+        const dueDate = formatLocalDate(paymentDate);
+        console.log('✅ Adding payment with due_date:', dueDate);
         payments.push({
           request_id: requestId,
           landlord_id: landlordId,
           tenant_id: tenantId,
           post_id: postId,
           amount: monthlyRent,
-          due_date: paymentDate.toISOString().split('T')[0],
+          due_date: dueDate,
           status: 'unpaid',
         });
+      } else {
+        console.log('❌ Payment date outside range, skipping');
       }
 
       // Move to next month
-      currentDate = new Date(year, month + 1, 1);
+      currentDate = new Date(Date.UTC(year, month + 1, 1, 12, 0, 0));
     }
+
+    console.log('💳 Total payments to create:', payments.length);
+    console.log(
+      '💳 Payment dates:',
+      payments.map((p) => p.due_date)
+    );
 
     if (payments.length === 0) {
       return [];
     }
 
+    console.log('💳 Inserting payments into database...');
     const { data, error } = await supabase
       .from('payments')
       .insert(payments as Payment[])
       .select();
 
     if (error) {
-      console.error('Error creating payments for rental:', error);
+      console.error('❌ Error creating payments for rental:', error);
       throw error;
     }
+
+    console.log('✅ Payments inserted successfully:', data?.length || 0, 'payments');
+    console.log(
+      '💳 Inserted payment IDs:',
+      data?.map((p) => p.id)
+    );
     return data ?? [];
   },
 
@@ -80,8 +131,9 @@ export const paymentService = {
     year: number,
     supabase: SupabaseClient<Database>
   ) {
-    const startDate = new Date(year, month, 1).toISOString().split('T')[0];
-    const endDate = new Date(year, month + 1, 0).toISOString().split('T')[0];
+    // Format dates using local time to avoid timezone shifts
+    const startDate = formatLocalDate(new Date(year, month, 1));
+    const endDate = formatLocalDate(new Date(year, month + 1, 0));
 
     const { data, error } = await supabase
       .from('payments')

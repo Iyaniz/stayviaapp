@@ -80,9 +80,11 @@ export const PaymentCalendarView: React.FC<PaymentCalendarViewProps> = ({
   };
 
   const getDayPayments = (day: number) => {
-    const dateStr = new Date(currentDate.getFullYear(), currentDate.getMonth(), day)
-      .toISOString()
-      .split('T')[0];
+    // Format date as YYYY-MM-DD using local time components (no timezone shift)
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const dayStr = String(day).padStart(2, '0');
+    const dateStr = `${year}-${month}-${dayStr}`;
     return paymentsByDate[dateStr] || [];
   };
 

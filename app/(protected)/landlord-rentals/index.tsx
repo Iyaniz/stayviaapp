@@ -72,6 +72,9 @@ export default function LandlordRentalsPage() {
         console.error('Error fetching approved requests:', error);
         throw error;
       }
+      console.log('📋 Fetched approved rentals:', data?.length, 'rentals');
+      console.log('📋 Post IDs queried:', postIds);
+      console.log('📋 Rentals data:', data);
       return data ?? [];
     },
     enabled: !!userId && !!userPosts?.length,

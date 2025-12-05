@@ -8,7 +8,7 @@ import {
   TextInput,
   Dimensions,
 } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useUser } from '@clerk/clerk-expo';
 import { useSupabase } from '@/lib/supabase';
@@ -17,6 +17,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { ratingService } from '@/services/ratingService';
 import { notificationService } from '@/services/notificationService';
+import { paymentService } from '@/services/paymentService';
 import Animated, {
   useSharedValue,
   useAnimatedScrollHandler,
@@ -103,7 +104,93 @@ export default function RatingDetailPage() {
     }
   }, [existingRating]);
 
-  // Generate payment dates based on rental period
+  // Fetch actual payment records from database
+  const {
+    data: payments = [],
+    isLoading: isLoadingPayments,
+    refetch: refetchPayments,
+  } = useQuery({
+    queryKey: ['payments', id],
+    queryFn: async () => {
+      if (!id) return [];
+      const result = await paymentService.getPaymentsByRequest(id, supabase);
+      console.log('📅 Payments fetched for request:', id, result);
+      return result;
+    },
+    enabled: !!id,
+  });
+
+  // Refetch payments when page comes into focus to get latest status
+  useFocusEffect(
+    React.useCallback(() => {
+      if (id) {
+        refetchPayments();
+      }
+    }, [id, refetchPayments])
+  );
+
+  // Helper function to normalize date to YYYY-MM-DD format
+  // IMPORTANT: Uses LOCAL time to avoid timezone shift issues
+  const normalizeDateKey = (date: string | Date): string => {
+    if (!date) return '';
+
+    // If it's already a string, try to extract YYYY-MM-DD
+    if (typeof date === 'string') {
+      // Handle ISO string format (e.g., "2024-01-02T00:00:00.000Z")
+      if (date.includes('T')) {
+        return date.split('T')[0];
+      }
+      // Handle date-only string (e.g., "2024-01-02")
+      if (date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        return date;
+      }
+      // Try to parse and format using LOCAL time
+      try {
+        const d = new Date(date);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      } catch {
+        return date.split(' ')[0]; // Fallback: take first part if space-separated
+      }
+    }
+
+    // If it's a Date object, convert using LOCAL time (not UTC)
+    // This prevents timezone shifts that cause date mismatches
+    if (date instanceof Date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    return '';
+  };
+
+  // Create payment status map from fetched payment records
+  const paymentsByDate = React.useMemo(() => {
+    const map = new Map<string, { status: string; amount: number }>();
+    console.log('🔍 Creating paymentsByDate map from payments:', payments);
+    payments.forEach((payment: any) => {
+      if (payment.due_date) {
+        const dateKey = normalizeDateKey(payment.due_date);
+        if (dateKey) {
+          console.log(
+            `  📌 Mapping payment: ${dateKey} -> status: ${payment.status}, amount: ${payment.amount}`
+          );
+          map.set(dateKey, {
+            status: payment.status || 'unpaid',
+            amount: payment.amount || 0,
+          });
+        }
+      }
+    });
+    console.log('✅ paymentsByDate map created with', map.size, 'entries');
+    return map;
+  }, [payments]);
+
+  // Generate payment dates based on rental period and merge with actual payment status
   const paymentDates = React.useMemo(() => {
     if (!rental?.rental_start_date || !rental?.rental_end_date || !rental?.monthly_rent_amount) {
       return [];
@@ -113,44 +200,98 @@ export default function RatingDetailPage() {
       date: Date;
       amount: number;
       isPast: boolean;
+      status: string;
     }> = [];
 
-    const startDate = new Date(rental.rental_start_date);
-    const endDate = new Date(rental.rental_end_date);
+    // Parse dates from database (stored as YYYY-MM-DD in due_date)
+    // Extract just the date part to avoid timezone issues
+    const startDateStr = rental.rental_start_date.split('T')[0]; // "2025-12-05"
+    const endDateStr = rental.rental_end_date.split('T')[0]; // "2026-02-05"
+
+    // Parse as local date components (YYYY-MM-DD)
+    const parseLocalDate = (dateStr: string) => {
+      const [year, month, day] = dateStr.split('-').map(Number);
+      // Create date in local time at midnight
+      return new Date(year, month - 1, day, 0, 0, 0, 0);
+    };
+
+    const startDate = parseLocalDate(startDateStr);
+    const endDate = parseLocalDate(endDateStr);
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Reset time for accurate comparison
     const paymentDay = rental.payment_day_of_month || startDate.getDate();
     const amount = rental.monthly_rent_amount;
 
+    console.log('📅 Generating payment dates for rental:', {
+      startDateStr,
+      endDateStr,
+      paymentDay,
+      amount,
+      paymentsByDateSize: paymentsByDate.size,
+    });
+
     // Always include the start date as the first payment
     const firstPayment = new Date(startDate);
-    firstPayment.setHours(0, 0, 0, 0);
+    const firstPaymentKey = normalizeDateKey(firstPayment);
+    const firstPaymentData = paymentsByDate.get(firstPaymentKey);
+    console.log(`  🔍 First payment: ${firstPaymentKey}, found data:`, firstPaymentData);
+    console.log(`  📋 Database has keys:`, Array.from(paymentsByDate.keys()));
     dates.push({
       date: firstPayment,
-      amount,
+      amount: firstPaymentData?.amount || amount,
       isPast: firstPayment < today,
+      status: firstPaymentData?.status || 'unpaid',
     });
 
     // Generate subsequent monthly payments
-    let currentDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, paymentDay);
+    let currentDate = new Date(
+      startDate.getFullYear(),
+      startDate.getMonth() + 1,
+      paymentDay,
+      0,
+      0,
+      0,
+      0
+    );
 
     while (currentDate <= endDate) {
       const paymentDate = new Date(currentDate);
-      paymentDate.setHours(0, 0, 0, 0);
 
       if (paymentDate <= endDate) {
+        const paymentKey = normalizeDateKey(paymentDate);
+        const paymentData = paymentsByDate.get(paymentKey);
+        console.log(`  🔍 Payment date: ${paymentKey}, found data:`, paymentData);
+        if (!paymentData) {
+          console.log(`  ⚠️ No payment data found for key: ${paymentKey}`);
+          console.log(`  📋 Available keys:`, Array.from(paymentsByDate.keys()));
+        }
         dates.push({
           date: paymentDate,
-          amount,
+          amount: paymentData?.amount || amount,
           isPast: paymentDate < today,
+          status: paymentData?.status || 'unpaid',
         });
       }
 
-      currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, paymentDay);
+      currentDate = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() + 1,
+        paymentDay,
+        0,
+        0,
+        0,
+        0
+      );
     }
 
+    console.log('✅ Generated', dates.length, 'payment dates. Status breakdown:', {
+      paid: dates.filter((d) => d.status === 'paid').length,
+      unpaid: dates.filter((d) => d.status === 'unpaid').length,
+      total: dates.length,
+    });
+
     return dates;
-  }, [rental]);
+  }, [rental, paymentsByDate]);
 
   // Create or update rating mutation
   const ratingMutation = useMutation({
@@ -288,7 +429,45 @@ export default function RatingDetailPage() {
     );
   };
 
-  const isLoading = isLoadingRental || isLoadingRating;
+  // Get payment status for a specific date
+  const getPaymentStatusForDate = (date: Date | null): string | null => {
+    if (!date) return null;
+    const dateKey = normalizeDateKey(date);
+    const payment = paymentDates.find((p) => {
+      const paymentKey = normalizeDateKey(p.date);
+      return paymentKey === dateKey;
+    });
+    if (payment) {
+      console.log(`  ✅ Found payment status for ${dateKey}:`, payment.status);
+    }
+    return payment?.status || null;
+  };
+
+  // Calculate payment summary data
+  const nextPayment = paymentDates.find((p) => p.status !== 'paid');
+  const paidPayments = paymentDates.filter((p) => p.status === 'paid');
+  const totalPaid = paidPayments.reduce((sum, p) => sum + p.amount, 0);
+  const totalDue = paymentDates.reduce((sum, p) => sum + p.amount, 0);
+
+  // Debug logging for payment calculations
+  React.useEffect(() => {
+    if (paymentDates.length > 0) {
+      console.log('💰 Payment Summary:', {
+        totalPayments: paymentDates.length,
+        paidCount: paidPayments.length,
+        paidPayments: paidPayments.map((p) => ({
+          date: normalizeDateKey(p.date),
+          amount: p.amount,
+          status: p.status,
+        })),
+        totalPaid,
+        totalDue,
+        nextPayment: nextPayment ? normalizeDateKey(nextPayment.date) : null,
+      });
+    }
+  }, [paymentDates, paidPayments, totalPaid, totalDue, nextPayment]);
+
+  const isLoading = isLoadingRental || isLoadingRating || isLoadingPayments;
 
   if (isLoading) {
     return (
@@ -313,10 +492,6 @@ export default function RatingDetailPage() {
     );
   }
 
-  const nextPayment = paymentDates.find((p) => !p.isPast);
-  const totalPaid = paymentDates.filter((p) => p.isPast).length * rental.monthly_rent_amount;
-  const totalDue = paymentDates.length * rental.monthly_rent_amount;
-
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-black">
       {/* Header */}
@@ -327,7 +502,7 @@ export default function RatingDetailPage() {
           <Ionicons name="chevron-back" size={24} color={colors.foreground} />
         </TouchableOpacity>
         <Text className="text-lg font-bold" style={{ color: colors.foreground }}>
-          {existingRating ? 'Edit Rating' : 'Rate Your Stay'}
+          Property Details
         </Text>
         <View style={{ width: 40 }} />
       </View>
@@ -525,7 +700,8 @@ export default function RatingDetailPage() {
                                 .slice(weekIndex * 7, (weekIndex + 1) * 7)
                                 .map((day, dayIndex) => {
                                   const hasPayment = hasPaymentDue(day, monthData.paymentDates);
-                                  const isPast = day ? day < new Date() : false;
+                                  const paymentStatus = getPaymentStatusForDate(day);
+                                  const isPaid = paymentStatus === 'paid';
                                   const isToday = day
                                     ? day.getDate() === new Date().getDate() &&
                                       day.getMonth() === new Date().getMonth() &&
@@ -538,7 +714,7 @@ export default function RatingDetailPage() {
                                       className="aspect-square flex-1 items-center justify-center rounded-xl"
                                       style={{
                                         backgroundColor: hasPayment
-                                          ? isPast
+                                          ? isPaid
                                             ? '#10B981'
                                             : '#DC2626'
                                           : isToday
@@ -609,37 +785,40 @@ export default function RatingDetailPage() {
                 Payment Schedule
               </Text>
               <View className="gap-2">
-                {paymentDates.map((payment, index) => (
-                  <View
-                    key={index}
-                    className="flex-row items-center justify-between rounded-lg border p-3"
-                    style={{
-                      borderColor: colors.border,
-                      backgroundColor: payment.isPast ? '#F0FDF4' : colors.background,
-                      opacity: payment.isPast ? 0.8 : 1,
-                    }}>
-                    <View className="flex-1 flex-row items-center gap-2">
-                      <Ionicons
-                        name={payment.isPast ? 'checkmark-circle' : 'calendar-outline'}
-                        size={20}
-                        color={payment.isPast ? '#10B981' : colors.foreground}
-                      />
-                      <View>
-                        <Text
-                          className="font-medium"
-                          style={{ color: payment.isPast ? '#059669' : colors.foreground }}>
-                          {formatDateShort(payment.date)}
-                        </Text>
-                        {payment.isPast && <Text className="text-xs text-green-600">Paid</Text>}
+                {paymentDates.map((payment, index) => {
+                  const isPaid = payment.status === 'paid';
+                  return (
+                    <View
+                      key={index}
+                      className="flex-row items-center justify-between rounded-lg border p-3"
+                      style={{
+                        borderColor: colors.border,
+                        backgroundColor: isPaid ? '#F0FDF4' : colors.background,
+                        opacity: isPaid ? 0.8 : 1,
+                      }}>
+                      <View className="flex-1 flex-row items-center gap-2">
+                        <Ionicons
+                          name={isPaid ? 'checkmark-circle' : 'calendar-outline'}
+                          size={20}
+                          color={isPaid ? '#10B981' : colors.foreground}
+                        />
+                        <View>
+                          <Text
+                            className="font-medium"
+                            style={{ color: isPaid ? '#059669' : colors.foreground }}>
+                            {formatDateShort(payment.date)}
+                          </Text>
+                          {isPaid && <Text className="text-xs text-green-600">Paid</Text>}
+                        </View>
                       </View>
+                      <Text
+                        className="font-bold"
+                        style={{ color: isPaid ? '#059669' : colors.foreground }}>
+                        ₱{payment.amount.toLocaleString()}
+                      </Text>
                     </View>
-                    <Text
-                      className="font-bold"
-                      style={{ color: payment.isPast ? '#059669' : colors.foreground }}>
-                      ₱{payment.amount.toLocaleString()}
-                    </Text>
-                  </View>
-                ))}
+                  );
+                })}
               </View>
             </View>
           )}

@@ -46,10 +46,11 @@ export const useRentalNotifications = (enabled: boolean = true) => {
         // Query for confirmed rentals that:
         // 1. Are confirmed
         // 2. Have rental_start_date set
-        // 3. rental_start_date + 1 minute has passed (for testing)
+        // 3. rental_start_date + 7 days has passed
         // 4. Notification hasn't been sent yet
+        // Note: This is a fallback for rentals confirmed before the scheduling fix
         const now = new Date();
-        const oneMinuteAgo = new Date(now.getTime() - 1 * 60 * 1000);
+        const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
         // Get rentals where current user is the tenant
         const { data: studentRentals, error: studentError } = await supabase
@@ -71,7 +72,7 @@ export const useRentalNotifications = (enabled: boolean = true) => {
           .eq('confirmed', true)
           .eq('rating_notif_sent', false)
           .not('rental_start_date', 'is', null)
-          .lte('rental_start_date', oneMinuteAgo.toISOString());
+          .lte('rental_start_date', sevenDaysAgo.toISOString());
 
         if (studentError) {
           console.error('❌ Error fetching student rentals:', studentError);

@@ -161,7 +161,7 @@ export default function NotificationIndex() {
     queryFn: async () => {
       if (!user?.id) return [];
       const now = new Date();
-      const oneMinuteAgo = new Date(now.getTime() - 1 * 60 * 1000);
+      const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
       const { data, error } = await supabase
         .from('requests')
@@ -180,7 +180,7 @@ export default function NotificationIndex() {
         .eq('confirmed', true)
         .is('rating_notif_sent', null)
         .not('rental_start_date', 'is', null)
-        .lte('rental_start_date', oneMinuteAgo.toISOString());
+        .lte('rental_start_date', sevenDaysAgo.toISOString());
 
       if (error) {
         console.error('Error fetching rentals due for rating:', error);

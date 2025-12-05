@@ -239,8 +239,8 @@ export default function Account() {
           </View>
         </View>
 
-        <Text className="text-sm text-gray-400 dark:text-gray-500 text-center mt-6 mb-8">
-          Version: Beta
+        <Text className="text-sm text-gray-400 dark:text-gray-500 text-center mt-6 ">
+          Powered by 
         </Text>
       </ScrollView>
     </SafeAreaView>

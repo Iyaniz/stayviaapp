@@ -2,6 +2,7 @@ import { Database } from '@/types/database.types';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { formatDistanceToNow } from 'date-fns/formatDistanceToNow';
 import { paymentService } from './paymentService';
+import { notificationService } from './notificationService';
 
 // ---------------------------
 // INSERT REQUEST BY USER ID
@@ -181,6 +182,17 @@ export const updateRequest = async (
         existing.user_id &&
         existing.post_id
       ) {
+        console.log('🏠 Creating payments for rental request:', {
+          requestId,
+          landlordId,
+          tenantId: existing.user_id,
+          postId: existing.post_id,
+          startDate,
+          endDate,
+          monthlyRent,
+          paymentDay,
+        });
+
         await paymentService.createPaymentsForRental(
           requestId,
           landlordId,
@@ -192,6 +204,39 @@ export const updateRequest = async (
           paymentDay,
           supabase
         );
+
+        console.log('✅ Payments created successfully');
+      } else {
+        console.log('❌ Payment creation skipped. Missing required data:', {
+          hasLandlordId: !!landlordId,
+          hasStartDate: !!startDate,
+          hasEndDate: !!endDate,
+          monthlyRent,
+          hasUserId: !!existing.user_id,
+          hasPostId: !!existing.post_id,
+        });
+      }
+
+      // Schedule rating reminder notification for 7 days after move-in date
+      if (startDate && existing.post_id) {
+        try {
+          // Get post title for notification
+          const { data: post } = await supabase
+            .from('posts')
+            .select('title')
+            .eq('id', existing.post_id)
+            .single();
+
+          const postTitle = post?.title || 'Your rental';
+          await notificationService.scheduleRatingReminderNotification(
+            requestId,
+            postTitle,
+            startDate
+          );
+        } catch (notificationError) {
+          console.error('Error scheduling rating notification:', notificationError);
+          // Don't throw - rental confirmation should succeed even if notification scheduling fails
+        }
       }
     } catch (paymentError) {
       console.error('Error creating payments for rental:', paymentError);
@@ -514,13 +559,14 @@ export const markRatingNotifSent = async (
 
 /**
  * Get rentals needing notification (for useRentalNotifications hook)
+ * This is a fallback for rentals confirmed before the scheduling fix
  */
 export const getRentalsNeedingNotification = async (
   userId: string,
   supabase: SupabaseClient<Database>
 ) => {
   const now = new Date();
-  const oneMinuteAgo = new Date(now.getTime() - 1 * 60 * 1000);
+  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
   const { data, error } = await supabase
     .from('requests')
@@ -540,7 +586,7 @@ export const getRentalsNeedingNotification = async (
     .eq('confirmed', true)
     .eq('rating_notif_sent', false)
     .not('rental_start_date', 'is', null)
-    .lte('rental_start_date', oneMinuteAgo.toISOString());
+    .lte('rental_start_date', sevenDaysAgo.toISOString());
 
   if (error) throw error;
   return data ?? [];

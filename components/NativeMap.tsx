@@ -126,21 +126,8 @@ export default function NativeMap({
     }
 
     // Show toast for debugging
-    if (markers.length > 0) {
-      Toast.show({
-        type: 'info',
-        text1: 'NativeMap Debug',
-        text2: `${markers.length} markers, ${primaryMarkers.length} primary, ${regularMarkers.length} regular`,
-        visibilityTime: 3000,
-      });
-    } else {
-      Toast.show({
-        type: 'error',
-        text1: 'NativeMap Warning',
-        text2: 'No markers received',
-        visibilityTime: 2000,
-      });
-    }
+   
+    
   }, [markers.length, primaryMarkers.length, regularMarkers.length]);
 
   return (
@@ -200,9 +187,7 @@ export default function NativeMap({
                 longitude: marker.longitude,
               }}
               title={marker.title}>
-              <View style={styles.primaryMarkerContainer}>
                 <Ionicons name="location" size={20} color="#667EEA"  />
-              </View>
             </Marker>
           );
         })}
@@ -240,9 +225,7 @@ export default function NativeMap({
               }}
               title={displayTitle}
               description={category}>
-              <View style={styles.landmarkMarkerContainer}>
                 <Ionicons name={iconName as any} size={20} color="#667EEA" />
-              </View>
             </Marker>
           );
         })}
