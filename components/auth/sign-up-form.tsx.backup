@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Text } from '@/components/ui/text';
-import ImageUploader from '@/components/download/ImageUploader';
 import { useSignUp } from '@clerk/clerk-expo';
 import { Link, router } from 'expo-router';
 import { Eye, EyeOff } from 'lucide-react-native';
@@ -19,20 +18,11 @@ export function SignUpForm() {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
-  const [schoolIdPhoto, setSchoolIdPhoto] = React.useState<string | undefined>();
-  const [landlordIdPhoto, setLandlordIdPhoto] = React.useState<string | undefined>();
 
   const passwordInputRef = React.useRef<TextInput>(null);
   const confirmPasswordInputRef = React.useRef<TextInput>(null);
 
-  const [error, setError] = React.useState<{ 
-    email?: string; 
-    password?: string; 
-    confirmPassword?: string; 
-    username?: string;
-    schoolIdPhoto?: string;
-    landlordIdPhoto?: string;
-  }>({});
+  const [error, setError] = React.useState<{ email?: string; password?: string; confirmPassword?: string; username?: string }>({});
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
   const [loading, setLoading] = React.useState(false); 
@@ -40,48 +30,23 @@ export function SignUpForm() {
   async function onSubmit() {
   if (!isLoaded) return;
 
-  // Reset errors
-  setError({});
-
-  // Validation
-  const newErrors: typeof error = {};
-  
+  // simple validation
   if (!username.trim()) {
-    newErrors.username = 'Username is required';
+    setError({ username: 'Username is required' });
+    return;
   }
-  
-  if (!email.trim()) {
-    newErrors.email = 'Email is required';
-  }
-  
   if (password !== confirmPassword) {
-    newErrors.confirmPassword = 'Passwords do not match';
-  }
-  
-  if (!schoolIdPhoto) {
-    newErrors.schoolIdPhoto = 'School ID photo is required';
-  }
-  
-  if (!landlordIdPhoto) {
-    newErrors.landlordIdPhoto = 'Landlord ID photo is required';
-  }
-
-  if (Object.keys(newErrors).length > 0) {
-    setError(newErrors);
+    setError({ confirmPassword: 'Passwords do not match' });
     return;
   }
 
   try {
-    setLoading(true);
+    setLoading(true); // start loading
 
     await signUp.create({
       emailAddress: email,
       password,
-      username,
-      unsafeMetadata: {
-        schoolIdPhoto,
-        landlordIdPhoto,
-      },
+      username, // clerk supports username field if enabled
     });
 
     await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
@@ -97,7 +62,7 @@ export function SignUpForm() {
     }
     console.error(JSON.stringify(err, null, 2));
   } finally {
-    setLoading(false);
+    setLoading(false); // stop loading (success or error)
   }
 }
 
@@ -136,10 +101,10 @@ export function SignUpForm() {
                   onSubmitEditing={onEmailSubmitEditing}
                   className="flex-1 border-0 rounded-none bg-transparent focus:ring-0 focus:border-primary"
                 />
+                {error.username ? (
+                  <Text className="text-sm font-medium text-destructive">{error.username}</Text>
+                ) : null}
               </View>
-              {error.username ? (
-                <Text className="text-sm font-medium text-destructive">{error.username}</Text>
-              ) : null}
             </View>
 
             {/* Email */}
@@ -158,10 +123,10 @@ export function SignUpForm() {
                   onSubmitEditing={onEmailSubmitEditing}
                   className="flex-1 border-0 rounded-none bg-transparent focus:ring-0 focus:border-primary"
                 />
+                {error.email ? (
+                  <Text className="text-sm font-medium text-destructive">{error.email}</Text>
+                ) : null}
               </View>
-              {error.email ? (
-                <Text className="text-sm font-medium text-destructive">{error.email}</Text>
-              ) : null}
             </View>
 
             {/* Password */}
@@ -204,7 +169,8 @@ export function SignUpForm() {
                   placeholder="Confirm your password"
                   secureTextEntry={!showConfirmPassword}
                   onChangeText={setConfirmPassword}
-                  returnKeyType="done"
+                  returnKeyType="send"
+                  onSubmitEditing={onSubmit}
                   className="flex-1 border-0 rounded-none bg-transparent focus:ring-0 focus:border-primary"
                 />
                 <TouchableOpacity
@@ -220,38 +186,6 @@ export function SignUpForm() {
               </View>
               {error.confirmPassword ? (
                 <Text className="text-sm font-medium text-destructive">{error.confirmPassword}</Text>
-              ) : null}
-            </View>
-
-            {/* School ID Photo */}
-            <View className="gap-1.5">
-              <Label>School ID Photo *</Label>
-              <View className="items-center">
-                <ImageUploader
-                  uri={schoolIdPhoto}
-                  onChange={setSchoolIdPhoto}
-                  placeholder="Upload School ID"
-                  size={150}
-                />
-              </View>
-              {error.schoolIdPhoto ? (
-                <Text className="text-sm font-medium text-destructive">{error.schoolIdPhoto}</Text>
-              ) : null}
-            </View>
-
-            {/* Landlord ID Photo */}
-            <View className="gap-1.5">
-              <Label>Landlord ID Photo *</Label>
-              <View className="items-center">
-                <ImageUploader
-                  uri={landlordIdPhoto}
-                  onChange={setLandlordIdPhoto}
-                  placeholder="Upload Landlord ID"
-                  size={150}
-                />
-              </View>
-              {error.landlordIdPhoto ? (
-                <Text className="text-sm font-medium text-destructive">{error.landlordIdPhoto}</Text>
               ) : null}
             </View>
 

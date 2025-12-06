@@ -1,6 +1,4 @@
-//
-// 🌍 Optimized OpenStreetMap Fetcher
-//
+
 
 export interface Landmark {
   name: string;
